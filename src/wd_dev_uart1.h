@@ -15,7 +15,8 @@
  * @{
  *
  * @defgroup   UART1
- * UART1
+ * UART1 <br>
+ * <b>NOTE: UART1 must be enabled before changing anything about it (e.g. 7 or 8 bit transmission)</b>
  * @{
  */
 
@@ -37,14 +38,16 @@
 #define POS_WD_DEV_UART1_AUX_MU_BAUD_REG (*((volatile uint32_t *) (POS_WD_DEV_GEN_AUX_BASE + 0x68)))
 
 /**
- * @brief      Enables UART1 through AUX_ENABLES reg
+ * @brief      Turns on/off the UART1
+ * 
+ * <b>UART1 MUST BE ANBLED BEFORE ANY OTHER FUNCTIONS ARE USED</b> <br>
+ * Also no checks are made if it is enabled
+ * 
+ * @param[in]  enabled  True to turn on false to turn off
  */
-void pos_wd_dev_uart1_enable();
-
-/**
- * @brief      Disables UART1 through AUX_ENABLES reg
- */
-void pos_wd_dev_uart1_disable();
+void pos_wd_dev_uart1_set_enabled(bool enabled);
+#define pos_wd_dev_uart1_enable() pos_wd_dev_uart1_set_enabled(true)
+#define pos_wd_dev_uart1_disable() pos_wd_dev_uart1_set_enabled(false)
 
 /**
  * @brief      Sets the baud rate of the UARt1
@@ -74,6 +77,44 @@ void pos_wd_dev_uart1_write_sync(uint8_t * data, size_t length);
  * @return     False if `pos_wd_dev_uart1_set_baud` returns false or gpio error
  */
 bool pos_wd_dev_uart1_init(unsigned baud);
+
+/**
+ * @brief      Turns on/off recieve functionality
+ * 
+ * @param[in]  recieve True to turn on and false to turn off
+ */
+void pos_wd_dev_uart1_set_reciever(bool recieve);
+#define pos_wd_dev_uart1_enable_reciever() pos_wd_dev_uart1_set_reciever(true)
+#define pos_wd_dev_uart1_disable_reciever() pos_wd_dev_uart1_set_reciever(false)
+
+/**
+ * @brief      Turn on/off transmit functionality
+ * 
+ * @param[in]  transmit True to enable false to disable
+ */
+void pos_wd_dev_uart1_set_transmitter(bool transmit);
+#define pos_wd_dev_uart1_enable_transmitter() pos_wd_dev_uart1_set_transmitter(true)
+#define pos_wd_dev_uart1_disable_transmitter() pos_wd_dev_uart1_set_transmitter(false)
+
+/**
+ * @brief      Activates 7 or 8 bit transmission
+ * 
+ * @param[in]  sevenbit True for 7 bit transmission and false for 8
+ */
+void pos_wd_dev_uart1_set_bit(bool sevenbit);
+#define pos_wd_dev_uart1_enable_sevenbit() pos_wd_dev_uart1_set_bit(true)
+#define pos_wd_dev_uart1_enable_eightbit() pos_wd_dev_uart1_set_bit(false)
+
+/**
+ * @brief      Sets RTS pin to high or low
+ * 
+ * <b>Remember to enable GPIO functionality</b>
+ *
+ * @param[in]  high  True for set high and false for otherwise
+ */
+void pos_wd_dev_uart1_set_rts(bool high);
+#define pos_wd_dev_uart1_enable_rts() pos_wd_dev_uart1_set_rts(true)
+#define pos_wd_dev_uart1_disable_rts() pos_wd_dev_uart1_set_rts(false)
 
 /**
  * @}

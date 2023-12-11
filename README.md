@@ -6,6 +6,7 @@ Fast. Low level control. C libraries to control hardware. Emulated flash memory 
 
 # Supported RPIs
 Anything with a cortex
+- TODO: More than RPI 2
 
 # Building
 When calling make define PIV to be equal to one of the follwing versions:  
