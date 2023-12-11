@@ -1,8 +1,8 @@
 # Define 64BIT in command line arguments
 
-CFLAGS = -fpic -ffreestanding -std=gnu99 -Wall -O1 -Wextra -mabi=aapcs
+CFLAGS = -fpic -ffreestanding -std=gnu99 -Wall -O0 -Wextra -mabi=aapcs
 CLINK =
-ASMFLAGS = -Wall -Wextra -fpic -ffreestanding -O1
+ASMFLAGS = -Wall -Wextra -fpic -ffreestanding -O0
 ASMLINK =
 LINKFLAGS = -ffreestanding -O1 -nostdlib
 LINKLINK = -lgcc

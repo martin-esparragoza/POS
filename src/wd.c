@@ -1,5 +1,5 @@
 /**
- * @defgroup WD
+ * @defgroup   WD
  * Warpdrive
  * @{
  * @}
@@ -9,8 +9,8 @@
 #include "wd_mem.h"
 #include "wd_dev_uart1.h"
 
-uint32_t pos_wd_machine_id;
-void * pos_wd_atags;
+static uint32_t pos_wd_machine_id;
+static void * pos_wd_atags;
 
 // static uint32_t MMIO_BASE;
  
@@ -166,13 +166,14 @@ void * pos_wd_atags;
  */
 int32_t __attribute__((target("arm"))) pos_wd_main(uint32_t r0 __attribute__((unused)), uint32_t r1, uint32_t r2) {
 	asm volatile("cpsid if"); // Disable IRQ and FIQ interrupts
-    // TODO: Disable interrupts
     pos_wd_machine_id = r1;
     pos_wd_atags = (void *) r2;
     
     pos_wd_dev_uart1_enable(115200);
     char string[] = "Mama mia!";
     pos_wd_dev_uart1_write_sync((uint8_t *) string, sizeof(string) / sizeof(string[0]));
+
+    //uart_init(2);
     
     // initialize UART for Raspi2
 	//uart_puts("Hello, kernel World!\r\n");
