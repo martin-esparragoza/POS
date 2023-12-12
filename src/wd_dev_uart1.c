@@ -20,14 +20,17 @@ bool pos_wd_dev_uart1_set_baud(unsigned baud) {
     return true;
 }
 
-// TODO: Timeout
-void pos_wd_dev_uart1_write_sync(uint8_t * data, size_t length) {
+void pos_wd_dev_uart1_write_char(char data) {
+    while ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & 0b00100000) <= 0) {;}
+    uint32_t reserved = POS_WD_DEV_UART1_AUX_MU_IO_REG & 0xFFFFFF00;
+    POS_WD_DEV_UART1_AUX_MU_IO_REG = reserved | data;
+
+}
+
+void pos_wd_dev_uart1_write_data(uint8_t * data, size_t length) {
     unsigned i = 0;
     while (i < length) {
-        if ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & 0b00100000) > 0) { // Transmit FIFO has at least one byte ready
-            uint32_t reserved = POS_WD_DEV_UART1_AUX_MU_IO_REG & 0xFFFFFF00;
-            POS_WD_DEV_UART1_AUX_MU_IO_REG = reserved | data[i++];
-        }
+        pos_wd_dev_uart1_write_char(data[i++]);
     }
 }
 

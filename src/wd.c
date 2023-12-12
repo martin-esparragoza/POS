@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include "wd_mem.h"
 #include "wd_dev_uart1.h"
-#include "wd_time.h"
+#include "wd_stdio.h"
 
 #define POS_WD_ERROR   0xBEEFDEAD
 #define POS_WD_SUCCESS 0xDEADBEEF
@@ -43,7 +43,7 @@ __attribute__((target("arm")))
         return POS_WD_ERROR;
 
     char string[] = "Mama mia!\n";
-    pos_wd_dev_uart1_write_sync((uint8_t *) string, sizeof(string) / sizeof(string[0]));
+    pos_wd_dev_uart1_write_data((uint8_t *) string, sizeof(string) / sizeof(string[0]));
 
     return POS_WD_SUCCESS;
 }

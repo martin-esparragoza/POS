@@ -63,12 +63,19 @@ void pos_wd_dev_uart1_set_enabled(bool enabled);
 bool pos_wd_dev_uart1_set_baud(unsigned baud);
 
 /**
+ * @brief      Write a single character to the FIFO
+ *
+ * @param[in]  data  Character
+ */
+void pos_wd_dev_uart1_write_char(char data);
+
+/**
  * @brief      Blocking write of data to UART1
  *
  * @param[in]  data    The data
  * @param[in]  length  The length of the data
  */
-void pos_wd_dev_uart1_write_sync(uint8_t * data, size_t length);
+void pos_wd_dev_uart1_write_data(uint8_t * data, size_t length);
 
 /**
  * @brief      Initializes the UART1
