@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "wd_mem.h"
 #include "wd_dev_uart1.h"
+#include "wd_time.h"
 
 #define POS_WD_ERROR   0xBEEFDEAD
 #define POS_WD_SUCCESS 0xDEADBEEF

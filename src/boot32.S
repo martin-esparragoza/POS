@@ -34,7 +34,7 @@
             cmp r1, r2
             pophs {r0-r2}
             // Ticking time bomb :) (maybe)
-            movhs lr, pos_boot_halt - 1
+            movhs lr, pos_boot_halt
             bhs pos_wd_main
             
             strb r0, [r1], 1

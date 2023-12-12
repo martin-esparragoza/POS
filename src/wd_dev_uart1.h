@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#include "wd_dev_gen.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
