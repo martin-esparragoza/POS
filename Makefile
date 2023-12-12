@@ -1,23 +1,25 @@
 # Define 64BIT in command line arguments
 
-CFLAGS = -fpic -ffreestanding -std=gnu99 -Wall -O0 -Wextra -mabi=aapcs
+CFLAGS = -fpic -ffreestanding -std=gnu99 -Wall -O0 -Wextra -std=c99
 CLINK =
-ASMFLAGS = -Wall -Wextra -fpic -ffreestanding -O0
+ASMFLAGS =
 ASMLINK =
 LINKFLAGS = -ffreestanding -O1 -nostdlib
 LINKLINK = -lgcc
+BIT = 32
 
-# DEFAULT: pi2
-PIV = PI2
+# DEFAULT: pi3ap
+PIV = PI3AP
 
 ifeq ($(PIV),PI2)
 	CC = arm-none-eabi-gcc
 	ASM = arm-none-eabi-gcc
 	LINK = arm-none-eabi-gcc
 	OBJCOPY = arm-none-eabi-objcopy
-	CFLAGS += -mcpu=cortex-a7
+	CFLAGS += -mcpu=cortex-a7 -mabi=aapcs
 	ASMFLAGS += -mcpu=cortex-a7
-else ifeq ($(PIV),$(filter $(PIV), PI2R PI3B PI3BP))
+	ASMFLAGS += -Wall -Wextra -fpic -O0 -ffreestanding
+else ifeq ($(PIV),$(filter $(PIV), PI2R PI3AP PI3B))
 	CFLAGS += -mcpu=cortex-a53
 	ASMFLAGS += -mcpu=cortex-a53
 else ifdef ($(PIV),PI4B)
@@ -27,24 +29,20 @@ else
 $(error "BAD PI")
 endif
 
-ifeq ($(PIV),$(filter $(PIV),PI3 PI3B PI3BP PI4B))
-	CC = aarch64-elf-gcc
-	ASM = aarch64-elf-as
-	LINK = aarch64-elf-gcc 
-	OBJCOPY = aarch64-elf-objcopy
-endif
-
-ifdef PI2
-else
-	CFLAGS += -mcpu=cortex-a7 -marm
-	ASMFLAGS += -mcpu=cortex-a7
+ifeq ($(PIV),$(filter $(PIV),PI3 PI3AP PI3B PI4B))
+	CC = aarch64-none-elf-gcc
+	ASM = aarch64-none-elf-as
+	LINK = aarch64-none-elf-gcc 
+	OBJCOPY = aarch64-none-elf-objcopy
+	CFLAGS += -mabi=lp64
+	BIT = 64
 endif
 
 ifdef BIG_ENDIAN
 	CFLAGS += -mbig-endian
 endif
 
-CFLAGS += -D PIV=$(PIV)
+CFLAGS += -D PIV=$(PIV) -D BIT=$(BIT)
 
 export
 

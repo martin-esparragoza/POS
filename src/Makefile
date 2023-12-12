@@ -1,10 +1,9 @@
-# TODO: deps
-
 .PHONY: all clean
 
 SRCS =
 	
-ifdef 64BIT
+ifeq ($(BIT),64)
+	SRCS += boot64.S
 else
 	SRCS += boot32.S
 endif

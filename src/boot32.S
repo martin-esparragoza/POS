@@ -1,6 +1,6 @@
 /**
  * Get to C
- * PI2
+ * 32 BIT
  */
 
 // Origin set by linker

@@ -17,7 +17,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#if PIV == PI2 || PI3AP
 #define POS_WD_DEV_GEN_AUX_BASE     0x3F215000
+#else
+#warning DEFINING POS_WD_DEV_GEN_AUX_BASE as 0x3F215000 BY DEFAULT! UNTESTED CODE IS BEING COMPILED!
+#endif
 #define POS_WD_DEV_GEN_AUX_IRQ      (*((volatile uint32_t *) (POS_WD_DEV_GEN_AUX_BASE + 0x00)))
 #define POS_WD_DEV_GEN_AUX_ENABLES  (*((volatile uint32_t *) (POS_WD_DEV_GEN_AUX_BASE + 0x04)))
 
