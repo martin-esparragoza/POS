@@ -1,9 +1,11 @@
+/* Only difference between linker32 and 64 is the origin (FOR NOW)
+
 ENTRY(_pos_boot_start); /* Covers annoyingness */
 
 SECTIONS {
-    . = 0x8000;
+    . = 0x80000;
     __start = .;
-    .text 0x8000 : {
+    .text 0x80000 : {
         __text_start = .;
         *( .text );
         __text_end = .;
@@ -27,7 +29,5 @@ SECTIONS {
         __bss_end = .;
     }
     
-    /* standard library should NOT be defined in the warp drive */
-    /* standard library should be loaded in before adding the kernel process to the process map (dll) */
     /* a very crude interfacing library will be used for things such as filesystem io, printing, and process creation */
 }

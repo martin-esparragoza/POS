@@ -24,7 +24,6 @@ void pos_wd_dev_uart1_write_char(char data) {
     while ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & 0b00100000) <= 0) {;}
     uint32_t reserved = POS_WD_DEV_UART1_AUX_MU_IO_REG & 0xFFFFFF00;
     POS_WD_DEV_UART1_AUX_MU_IO_REG = reserved | data;
-
 }
 
 void pos_wd_dev_uart1_write_data(uint8_t * data, size_t length) {

@@ -14,8 +14,18 @@
  */
 
 #pragma once
+#include <stdbool.h>
 
-void wd_printf(const char * format, void (* write_char)(char data), ...);
+/**
+ * @brief      Fprintf
+ * 
+ * Supports %d for now
+ *
+ * @param[in]  write_char  Character print function
+ * @param[in]  format      Fstring
+ * @param[in]  vargs       Data format
+ */
+void pos_wd_fprintf(void (* const write_char)(char), const char * format, ...);
 
 /**
  * @}

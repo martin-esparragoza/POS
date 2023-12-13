@@ -1,11 +1,14 @@
 .PHONY: all clean
 
 SRCS =
+LINKFILE =
 	
 ifeq ($(BIT),64)
 	SRCS += boot64.S
+	LINKFILE = linker64.ld
 else
 	SRCS += boot32.S
+	LINKFILE = linker32.ld
 endif
 
 SRCS += $(wildcard *.c)
@@ -31,7 +34,7 @@ clean:
 	
 # TODO: make this not garbage
 %.img: $(OBJS)
-	$(LINK) -T linker.ld -o intermediate.elf $(LINKFLAGS) $(OBJS) $(LINKLINK)
+	$(LINK) -T $(LINKFILE) -o intermediate.elf $(LINKFLAGS) $(OBJS) $(LINKLINK)
 	$(OBJCOPY) intermediate.elf -O binary $@
 	
 ifneq ($(MAKECMDGOALS),clean)

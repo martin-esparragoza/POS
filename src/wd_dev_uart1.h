@@ -22,6 +22,7 @@
 
 #pragma once
 #include "wd_dev_gen.h"
+#include "wd_stdio.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -123,6 +124,13 @@ void pos_wd_dev_uart1_set_bit(bool sevenbit);
 void pos_wd_dev_uart1_set_rts(bool high);
 #define pos_wd_dev_uart1_enable_rts() pos_wd_dev_uart1_set_rts(true)
 #define pos_wd_dev_uart1_disable_rts() pos_wd_dev_uart1_set_rts(false)
+
+/**
+ * @addtogroup STDIO
+ * @{
+ */
+#define pos_wd_dev_uart1_printf(format, ...) pos_wd_fprintf(&pos_wd_dev_uart1_write_char, format, __VA_ARGS__)
+/** @} */
 
 /**
  * @}
