@@ -6,7 +6,7 @@
  * Buffered support is for CHUMPS! This is for debugging anyway. It should be primitive.
  * 
  * @addtogroup WD
- * ${
+ * @{
  * 
  * @defgroup   STDIO
  * Standard IO

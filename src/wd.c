@@ -33,14 +33,8 @@ __attribute__((target("arm")))
 #endif
     pos_wd_machine_id = r1;
     pos_wd_atags = (uintptr_t) r2;
-    
-    // Initialize the UART1 (mini uart)
-    pos_wd_dev_uart1_enable();
-    pos_wd_dev_uart1_enable_transmitter();
-    pos_wd_dev_uart1_enable_sevenbit();
-    pos_wd_dev_uart1_enable_rts();
-    if (!pos_wd_dev_uart1_set_baud(115200))
-        return POS_WD_ERROR;
+
+    pos_wd_dev_uart1_init();
 
     char string[] = "Mama mia!\n";
     pos_wd_dev_uart1_write_data((uint8_t *) string, sizeof(string) / sizeof(string[0]));

@@ -40,6 +40,18 @@
 #define POS_WD_DEV_UART1_AUX_MU_BAUD_REG (*((volatile uint32_t *) (POS_WD_DEV_GEN_AUX_BASE + 0x68)))
 
 /**
+ * @brief      Init the UART1
+ * 
+ * Sets GPIO and cleans. <br>
+ * Sets baud to 115200 <br>
+ * Enables transmission <br>
+ * Defaults to 7 bit <br>
+ * 
+ * @return False if baud set fail
+ */
+void pos_wd_dev_uart1_init();
+
+/**
  * @brief      Turns on/off the UART1
  * 
  * <b>UART1 MUST BE ANBLED BEFORE ANY OTHER FUNCTIONS ARE USED</b> <br>
@@ -77,15 +89,6 @@ void pos_wd_dev_uart1_write_char(char data);
  * @param[in]  length  The length of the data
  */
 void pos_wd_dev_uart1_write_data(uint8_t * data, size_t length);
-
-/**
- * @brief      Initializes the UART1
- *
- * @param[in]  baud  The baud rate that is supplied to `pos_wd_dev_uart1_set_baud`
- *
- * @return     False if `pos_wd_dev_uart1_set_baud` returns false or gpio error
- */
-bool pos_wd_dev_uart1_init(unsigned baud);
 
 /**
  * @brief      Turns on/off recieve functionality
@@ -126,14 +129,14 @@ void pos_wd_dev_uart1_set_rts(bool high);
 #define pos_wd_dev_uart1_disable_rts() pos_wd_dev_uart1_set_rts(false)
 
 /**
+ * @}
+ * @}
+ * @}
+ */
+
+/**
  * @addtogroup STDIO
  * @{
  */
 #define pos_wd_dev_uart1_printf(format, ...) pos_wd_fprintf(&pos_wd_dev_uart1_write_char, format, __VA_ARGS__)
 /** @} */
-
-/**
- * @}
- * @}
- * @}
- */

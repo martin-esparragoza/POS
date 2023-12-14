@@ -1,10 +1,24 @@
 #include "wd_dev_uart1.h"
 #include "wd_dev_gen.h"
-#include "wd_time.h"
 #include "wd_dev_gpio.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+
+void pos_wd_dev_uart1_init() {
+    pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_FLOAT);
+    pos_wd_dev_gpio_setpupd(15, POS_WD_DEV_GPIO_PUPD_FLOAT);
+    pos_wd_dev_gpio_clr(14);
+    pos_wd_dev_gpio_clr(15);
+    pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_ALT0); // Transfer line
+    pos_wd_dev_gpio_setpinfunction(15, POS_WD_DEV_GPIO_FUN_ALT0); // Recieve line
+    
+    // Initialize the UART1 (mini uart)
+    pos_wd_dev_uart1_enable();
+    pos_wd_dev_uart1_enable_transmitter();
+    pos_wd_dev_uart1_enable_sevenbit();
+    pos_wd_dev_uart1_set_baud(115200); // This should NEVER error
+}
 
 void pos_wd_dev_uart1_set_enabled(bool enabled) {
     POS_WD_DEV_GEN_AUX_ENABLES &= (~((uint32_t) 1)) | enabled;
