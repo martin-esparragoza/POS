@@ -1,12 +1,12 @@
 # POS
-Raspberry PI operating system. For cortex processors only.
+Raspberry Pi FAKE real-time operating system. For cortex processors only.
 
-# Why?
-Fast. Low level control. C libraries to control hardware. Emulated flash memory run on boot. Drivers for many. 
+# FAKE?
+POS is a FAKE real-time operating system. It does not stick to the traditional definition of a real time operating system as it does not GUARANTEE that something is handled instantly. Hardware access will not be ripped out of a driver's hands instantly and instead it will be given VERY minimal time to panic and store state. This does not change the fact that drivers should be designed to panic. 
 
 # Supported RPIs
 Anything with a cortex
-- TODO: More than RPI 2
+- Testing done on a PI3B
 
 # Building
 When calling make define PIV to be equal to one of the follwing versions:  
@@ -19,5 +19,5 @@ These can be defined to anything it doesn't matter.
 BIG_ENDIAN can also be optionally defined (value does not matter)  
 To get docs run ```doxygen Doxyfile```
 
-# STDLIB
-Standard library is in /include and /lib. A more primitive form of some of the standard library is used in the warp drive, although should not be used outside of it.
+# Features
+POS is a minimal operating system that is meant to satisfy the needs to hobbyists. It is not truly real time however operations should be very much so prioritized. It is designed to be fast.
