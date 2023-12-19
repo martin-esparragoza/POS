@@ -43,7 +43,8 @@ void __attribute__((noinline)) pos_wd_dev_uart1_write_char(char data) {
     if (data == '\0') // UART1 can't send a 0 bc no parity
         return;
 
-    while ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & (0x20 | 0x40)) != (0x20 | 0x40)) {;}
+    // Wait until we can send
+    while ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & 0x20) != 0) {;}
     POS_WD_DEV_UART1_AUX_MU_IO_REG = data;
 }
 
