@@ -6,22 +6,31 @@
 #include <stddef.h>
 
 void pos_wd_dev_uart1_init() {
-    pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_FLOAT);
-    pos_wd_dev_gpio_setpupd(15, POS_WD_DEV_GPIO_PUPD_FLOAT);
+    pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_DOWN);
+    pos_wd_dev_gpio_setpupd(15, POS_WD_DEV_GPIO_PUPD_DOWN);
+    pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_ALT5); // Transfer line
+    pos_wd_dev_gpio_setpinfunction(15, POS_WD_DEV_GPIO_FUN_ALT5); // Recieve line
     pos_wd_dev_gpio_clr(14);
     pos_wd_dev_gpio_clr(15);
-    pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_ALT0); // Transfer line
-    pos_wd_dev_gpio_setpinfunction(15, POS_WD_DEV_GPIO_FUN_ALT0); // Recieve line
     
     // Initialize the UART1 (mini uart)
     pos_wd_dev_uart1_enable();
-    pos_wd_dev_uart1_enable_transmitter();
+    POS_WD_DEV_UART1_AUX_MU_CNTL_REG = 0; // Disable stuff like auto folow control
+    POS_WD_DEV_UART1_AUX_MU_IER_REG = 0; // Disable interrupts
+    POS_WD_DEV_UART1_AUX_MU_MCR_REG = 0; // RTS high (unknown if needed)
     pos_wd_dev_uart1_enable_sevenbit();
     pos_wd_dev_uart1_set_baud(115200); // This should NEVER error
+    pos_wd_dev_uart1_enable_transmitter();
+}
+
+// Garbage function to shove in a mask
+static void set_bit(volatile uint32_t * reg, uint32_t bit) {
+    uint32_t savebits = *reg & (~bit);
+    *reg = savebits | bit;
 }
 
 void pos_wd_dev_uart1_set_enabled(bool enabled) {
-    POS_WD_DEV_GEN_AUX_ENABLES &= (~((uint32_t) 1)) | enabled;
+    set_bit(&POS_WD_DEV_GEN_AUX_ENABLES, enabled);
 }
 
 bool pos_wd_dev_uart1_set_baud(unsigned baud) {
@@ -48,17 +57,13 @@ void pos_wd_dev_uart1_write_data(uint8_t * data, size_t length) {
 }
 
 void pos_wd_dev_uart1_set_reciever(bool recieve) {
-    POS_WD_DEV_UART1_AUX_MU_CNTL_REG &= (~((uint32_t) 1)) | recieve;
+    set_bit(&POS_WD_DEV_UART1_AUX_MU_CNTL_REG, recieve);
 }
 
 void pos_wd_dev_uart1_set_transmitter(bool transmit) {
-    POS_WD_DEV_UART1_AUX_MU_CNTL_REG &= (~((uint32_t) 1 << 1)) | transmit;
+    set_bit(&POS_WD_DEV_UART1_AUX_MU_CNTL_REG, transmit << 1);
 }
 
 void pos_wd_dev_uart1_set_bit(bool sevenbit) {
-    POS_WD_DEV_UART1_AUX_MU_LCR_REG &= (~((uint32_t) 1)) | sevenbit << 1;
-}
-
-void pos_wd_dev_uart1_set_rts(bool high) {
-    POS_WD_DEV_UART1_AUX_MU_MCR_REG &= (~((uint32_t) 1 << 1)) | high << 1;
+    set_bit(&POS_WD_DEV_UART1_AUX_MU_LCR_REG, sevenbit);
 }

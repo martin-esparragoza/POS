@@ -36,9 +36,9 @@ __attribute__((target("arm")))
     pos_wd_machine_id = r1;
     pos_wd_atags = (uintptr_t) r2;
 
-    /*pos_wd_dev_uart1_init();
+    pos_wd_dev_uart1_init();
 
-    char string[] = "Mama mia!\n";
+    /*char string[] = "Mama mia!\n";
     pos_wd_dev_uart1_write_data((uint8_t *) string, sizeof(string) / sizeof(string[0]));
 
     pos_wd_fprintf(&pos_wd_dev_uart1_write_char, "Dead beef! %d\n", 1245);
@@ -49,26 +49,13 @@ __attribute__((target("arm")))
 
     pos_wd_dev_uart1_printf("Mama mia: %d\n", 0xDEADBEEF);*/
 
-    //pos_wd_dev_uart1_init();
-    //pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_UP);
+    while (1) {
+        pos_wd_dev_uart1_write_char('a');
+    }
+
+    //pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_DOWN);
     //pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_OUTPUT);
-    //pos_wd_dev_gpio_clr(14);
     //pos_wd_dev_gpio_set(14, POS_WD_DEV_GPIO_STATE_HIGH);
-
-    // TEST CODE FOR GPIO & REAL LIFE USAGE
-
-    pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_UP);
-    pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_OUTPUT);
-    pos_wd_dev_gpio_set(14, POS_WD_DEV_GPIO_STATE_HIGH);
-
-    /*POS_WD_DEV_GPIO_GPPUD = 2;
-    pos_wd_delay(150);
-    POS_WD_DEV_GPIO_GPPUDCLK0 = (1 << 14);
-    pos_wd_delay(150);
-    POS_WD_DEV_GPIO_GPPUD = 0;
-    POS_WD_DEV_GPIO_GPPUDCLK0 = 0;*/
-    //POS_WD_DEV_GPIO_GPFSEL1 |= (1 << ((14 % 10) * 3));
-    //POS_WD_DEV_GPIO_GPSET0 = (1 << 14);
 
     return POS_WD_SUCCESS;
 }

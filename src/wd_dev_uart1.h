@@ -118,17 +118,6 @@ void pos_wd_dev_uart1_set_bit(bool sevenbit);
 #define pos_wd_dev_uart1_enable_eightbit() pos_wd_dev_uart1_set_bit(false)
 
 /**
- * @brief      Sets RTS pin to high or low
- * 
- * <b>Remember to enable GPIO functionality</b>
- *
- * @param[in]  high  True for set high and false for otherwise
- */
-void pos_wd_dev_uart1_set_rts(bool high);
-#define pos_wd_dev_uart1_enable_rts() pos_wd_dev_uart1_set_rts(true)
-#define pos_wd_dev_uart1_disable_rts() pos_wd_dev_uart1_set_rts(false)
-
-/**
  * @}
  * @}
  * @}
