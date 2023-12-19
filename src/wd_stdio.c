@@ -29,6 +29,27 @@ static inline void print_integer(void (* const write_char)(char), int val) {
     }
 }
 
+static void print_bin(void (* const write_char)(char), int val);
+static inline void print_bin(void (* const write_char)(char), int val) {
+    uintmax_t mask = 1;
+    unsigned char offset = 0;
+#if BITS == 32
+    offset = __builtin_ffs(val);
+#else
+    offset = __builtin_ffsll(val);
+#endif
+
+    if (((unsigned int) val) != 0)
+        offset--;
+
+    mask <<= offset;
+
+    while (mask != 0) {
+        (*write_char)('0' + ((val & mask) > 0));
+        mask >>= 1;
+    }
+}
+
 void pos_wd_fprintf(void (* const write_char)(char), const char * format, ...) {
     va_list args;
     va_start(args, format);
@@ -40,6 +61,8 @@ void pos_wd_fprintf(void (* const write_char)(char), const char * format, ...) {
                 case 'd':
                     print_integer(write_char, va_arg(args, int));
                     break;
+                case 'b':
+                    print_bin(write_char, va_arg(args, int));
             }
             continue;
         }

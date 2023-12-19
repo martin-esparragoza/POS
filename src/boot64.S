@@ -44,3 +44,6 @@
         // On halt r0 should be equal to 0xDEADBEEF
         wfe
         b pos_boot_halt
+
+.section .data
+    .ascii "POS_WD SIG 64 BIT CODE"

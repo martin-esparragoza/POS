@@ -8,8 +8,8 @@ LINKFLAGS = -ffreestanding -O1 -nostdlib
 LINKLINK = -lgcc
 BIT = 32
 
-# DEFAULT: pi3ap
-PIV = PI3AP
+# DEFAULT: pi3b
+PIV = PI3B
 
 ifeq ($(PIV),PI2)
 	CC = arm-none-eabi-gcc

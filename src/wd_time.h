@@ -18,6 +18,6 @@
  *
  * @param[in]  count  # of clock cycles to execute
  */
-void pos_wd_delay(uint32_t count);
+void pos_wd_delay(unsigned long count);
 
 /** @} */

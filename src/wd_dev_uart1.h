@@ -138,5 +138,5 @@ void pos_wd_dev_uart1_set_rts(bool high);
  * @addtogroup STDIO
  * @{
  */
-#define pos_wd_dev_uart1_printf(format, ...) pos_wd_fprintf(&pos_wd_dev_uart1_write_char, format, __VA_ARGS__)
+#define pos_wd_dev_uart1_printf(format, ...) pos_wd_fprintf(&pos_wd_dev_uart1_write_char, format, ##__VA_ARGS__)
 /** @} */

@@ -52,8 +52,8 @@
 #define POS_WD_DEV_GPIO_GPPUDCLK1 (*((volatile uint32_t *) (POS_WD_DEV_GPIO_BASE + 0x9C)))
 
 enum pos_wd_dev_gpio_state {
-    HIGH,
-    LOW
+    POS_WD_DEV_GPIO_STATE_HIGH = 1,
+    POS_WD_DEV_GPIO_STATE_LOW =  0
 };
 
 /**
@@ -147,6 +147,15 @@ enum pos_wd_dev_gpio_eventopt {
  * @param[in]  opt     This is a bitmap
  */
 void pos_wd_dev_gpio_set_event(unsigned char pin, enum pos_wd_dev_gpio_eventopt opt);
+
+/**
+ * @brief      Set to high or low
+ * 
+ * Ignored if pin is not set as an output
+ *
+ * @param[in]  state  High or low state
+ */
+void pos_wd_dev_gpio_set(unsigned char pin, enum pos_wd_dev_gpio_state state);
 
 /**
  * @{

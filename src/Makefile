@@ -4,9 +4,11 @@ SRCS =
 LINKFILE =
 	
 ifeq ($(BIT),64)
+	KERNEL = kernel8.img
 	SRCS += boot64.S
 	LINKFILE = linker64.ld
 else
+	KERNEL = kernel7.img
 	SRCS += boot32.S
 	LINKFILE = linker32.ld
 endif
@@ -15,7 +17,7 @@ SRCS += $(wildcard *.c)
 OBJS = $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(SRCS)))
 DEPFILES = $(patsubst %.c,%.d,$(wildcard *.c))
 
-all: $(DEPFILES) $(OBJS) kernel.img
+all: $(DEPFILES) $(OBJS) $(KERNEL)
 
 clean:
 	rm -rf *.o

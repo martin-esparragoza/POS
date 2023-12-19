@@ -1,4 +1,5 @@
 #include "wd_dev_gpio.h"
+#include "wd_dev_uart1.h"
 #include "wd_time.h"
 #include <stdint.h>
 #include <stddef.h>
@@ -23,7 +24,7 @@ void pos_wd_dev_gpio_setpinfunction(unsigned char pin, enum pos_wd_dev_gpio_fun 
     // pin % 10 as each register holds 10 pins and * 3 because each pin gets 3 bits
     unsigned short offset = (pin % 10) * 3;
 
-    uint32_t savebits = *reg & (~(((uint32_t) 0b00000111) << offset));
+    uint32_t savebits = *reg & (~(0b00000111 << offset));
     *reg = savebits | (((uint32_t) fun) << offset);
 }
 
@@ -32,8 +33,8 @@ void pos_wd_dev_gpio_setpupd(unsigned char pin, enum pos_wd_dev_gpio_pupd mode) 
     POS_WD_DEV_GPIO_GPPUD = reserved | mode;
     pos_wd_delay(150);
 
-    // We actually want to store it this time
-    volatile uint32_t * reg = pin >= 31 ? &POS_WD_DEV_GPIO_GPPUDCLK0 : &POS_WD_DEV_GPIO_GPPUDCLK1;
+    // Store so we can reverse with easy XOR
+    volatile uint32_t * reg = pin <= 31 ? &POS_WD_DEV_GPIO_GPPUDCLK0 : &POS_WD_DEV_GPIO_GPPUDCLK1;
     pin %= 31;
     *reg |= 1 << pin;
 
@@ -83,4 +84,12 @@ void pos_wd_dev_gpio_set_event(unsigned char pin, enum pos_wd_dev_gpio_eventopt 
         write_multireg(&POS_WD_DEV_GPIO_GPAREN0, &POS_WD_DEV_GPIO_GPAREN1, pin);
     if (opt & POS_WD_DEV_GPIO_EVENTOPT_AFE)
         write_multireg(&POS_WD_DEV_GPIO_GPAFEN0, &POS_WD_DEV_GPIO_GPAFEN1, pin);
+}
+
+void pos_wd_dev_gpio_set(unsigned char pin, enum pos_wd_dev_gpio_state state) {
+    volatile uint32_t * reg = pin <= 31 ? &POS_WD_DEV_GPIO_GPSET0 : &POS_WD_DEV_GPIO_GPSET1;
+    pin %= 31;
+
+    uint32_t savebits = *reg & (~(1 << pin));
+    *reg = savebits | (state << pin);
 }
