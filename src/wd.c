@@ -11,6 +11,7 @@
 #include "wd_dev_gpio.h"
 #include "wd_stdio.h"
 #include "wd_time.h"
+#include "wd_dev_sdhost.h"
 
 #define POS_WD_ERROR   0xBEEFDEAD
 #define POS_WD_SUCCESS 0xDEADBEEF
@@ -39,6 +40,8 @@ __attribute__((target("arm")))
     pos_wd_dev_uart1_init();
 
     pos_wd_dev_uart1_printf("Mama mia: %d\n", 0xDEADBEEF);
+
+    pos_wd_dev_sdhost_init();
 
     //pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_DOWN);
     //pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_OUTPUT);

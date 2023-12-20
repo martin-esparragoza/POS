@@ -44,7 +44,7 @@ void __attribute__((noinline)) pos_wd_dev_uart1_write_char(char data) {
         return;
 
     // Wait until we can send
-    while ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & 0x20) != 0) {;}
+    while ((POS_WD_DEV_UART1_AUX_MU_LSR_REG & 0x20) == 0) {;}
     POS_WD_DEV_UART1_AUX_MU_IO_REG = data;
 }
 

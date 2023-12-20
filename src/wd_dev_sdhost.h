@@ -15,7 +15,7 @@
 
 #pragma once
 
-#define POS_WD_DEV_SDHOST_BASE   0x20202000
+#define POS_WD_DEV_SDHOST_BASE   0x7E202000
 #define POS_WD_DEV_SDHOST_SDCMD  (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x00)))
 #define POS_WD_DEV_SDHOST_SDARG  (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x04)))
 #define POS_WD_DEV_SDHOST_SDTOUT (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x08)))
@@ -31,6 +31,13 @@
 #define POS_WD_DEV_SDHOST_SDHBCT (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x3c)))
 #define POS_WD_DEV_SDHOST_SDDATA (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x40)))
 #define POS_WD_DEV_SDHOST_SDHBLC (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x50)))
+
+/**
+ * @brief      Init sdhost
+ * 
+ * Should be called before anything
+ */
+void pos_wd_dev_sdhost_init();
 
 /**
  * @}
