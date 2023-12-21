@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "wd_mem.h"
 #include "wd_dev_uart1.h"
+#include "wd_dev_mbox.h"
 #include "wd_dev_gpio.h"
 #include "wd_stdio.h"
 #include "wd_time.h"
@@ -39,9 +40,10 @@ __attribute__((target("arm")))
 
     pos_wd_dev_uart1_init();
 
-    pos_wd_dev_uart1_printf("Mama mia: %d\n", 0xDEADBEEF);
+    pos_wd_dev_uart1_printf("JAIDJIASDIOAJSO: %d\n", 0xDEADBEEF);
 
-    pos_wd_dev_sdhost_init();
+    if (!pos_wd_dev_sdhost_init())
+        pos_wd_dev_uart1_printf("Failed sdhost init :(\n");
 
     //pos_wd_dev_gpio_setpupd(14, POS_WD_DEV_GPIO_PUPD_DOWN);
     //pos_wd_dev_gpio_setpinfunction(14, POS_WD_DEV_GPIO_FUN_OUTPUT);

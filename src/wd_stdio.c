@@ -3,8 +3,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-static void print_integer(void (* const write_char)(char), int val);
-static inline void print_integer(void (* const write_char)(char), int val) {
+// There is a bug. I don't know what causes it.
+static void print_integer(void (* const write_char)(char), intmax_t val);
+static inline void print_integer(void (* const write_char)(char), intmax_t val) {
     uintmax_t divisor;
 #if BITS == 32
     divisor = 1000000000;
@@ -29,8 +30,8 @@ static inline void print_integer(void (* const write_char)(char), int val) {
     }
 }
 
-static void print_bin(void (* const write_char)(char), int val);
-static inline void print_bin(void (* const write_char)(char), int val) {
+static void print_bin(void (* const write_char)(char), intmax_t val);
+static inline void print_bin(void (* const write_char)(char), intmax_t val) {
     uintmax_t mask = 1;
     unsigned char offset = 0;
 #if BITS == 32

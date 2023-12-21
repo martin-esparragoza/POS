@@ -14,6 +14,8 @@
  */
 
 #pragma once
+#include <stdbool.h>
+#include <stdint.h>
 
 #define POS_WD_DEV_SDHOST_BASE   0x7E202000
 #define POS_WD_DEV_SDHOST_SDCMD  (*((volatile uint32_t *) (POS_WD_SDHOST_BASE + 0x00)))
@@ -36,8 +38,10 @@
  * @brief      Init sdhost
  * 
  * Should be called before anything
+ * 
+ * @return     False if failed
  */
-void pos_wd_dev_sdhost_init();
+bool pos_wd_dev_sdhost_init();
 
 /**
  * @}

@@ -21,9 +21,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-struct pos_wd_dev_mbox_propint_tag {
+struct __attribute__((packed)) pos_wd_dev_mbox_propint_tag {
     uint32_t identifier;
-    uint32_t size;       /**< Private. Size of value buffer in bytes */
+    uint32_t size;       /**< Size of value buffer in bytes */
     uint32_t code;       /**< Request code that can be set */
     uint32_t value[];    /**< Cheat to align to 32 bit */
 };
@@ -35,7 +35,7 @@ struct pos_wd_dev_mbox_propint_tag {
  * you need to align it to a 32
  * bit boudary <br>
  */
-struct pos_wd_dev_mbox_propint_buf {
+struct __attribute__((packed)) pos_wd_dev_mbox_propint_buf {
     uint32_t size;                             /**< Size in bytes that is set by writer */
     uint32_t code;                             /**< Request/response code */
     struct pos_wd_dev_mbox_propint_tag tags[];
@@ -50,7 +50,7 @@ enum pos_wd_dev_mbox_propint_code {
 /**
  * @brief      Inits values for propint buffer writer
  *
- * @param      buffer  Pointer to buffer allocated some way or another
+ * @param[in]  buffer  Pointer to buffer allocated some way or another
  */
 void pos_wd_dev_mbox_propint_buf_new(struct pos_wd_dev_mbox_propint_buf * buffer, enum pos_wd_dev_mbox_propint_code code);
 
@@ -71,23 +71,34 @@ void pos_wd_dev_mbox_propint_buf_addtag(struct pos_wd_dev_mbox_propint_buf * buf
  * 
  * Does not clear.
  *
- * @param      buffer  Buffer
+ * @param[in]  buffer  Buffer
  */
 void pos_wd_dev_mbox_propint_buf_reset(struct pos_wd_dev_mbox_propint_buf * buffer);
 
 /**
- * @brief      Send buffer to MBOX
+ * @brief      Adds the ending 0 to a buffer
+ * 
+ * Adding new tags to the
+ * buffer will result in a
+ * corrupted buffer.
  *
  * @param      buffer  Buffer
+ */
+void pos_wd_dev_mbox_propint_buf_addendtag(struct pos_wd_dev_mbox_propint_buf * buffer);
+
+/**
+ * @brief      Send buffer to MBOX
+ *
+ * @param[in]  buffer  Buffer
  */
 void pos_wd_dev_mbox_propint_sendbuf(struct pos_wd_dev_mbox_propint_buf * buffer);
 
 /**
  * @brief      Get tag from propint buffer
  *
- * @param      buffer  Buffer
+ * @param[in]  buffer  Buffer
  * @param[in]  index   Index of tag
  *
  * @return     NULL if cannot find
  */
-struct pos_wd_dev_mbox_propint_tag * pos_wd_dev_mbox_propint_gettag(struct pos_wd_dev_mbox_propint_buf * buffer, unsigned index);
+struct pos_wd_dev_mbox_propint_tag * pos_wd_dev_mbox_propint_buf_gettag(struct pos_wd_dev_mbox_propint_buf * buffer, unsigned index);

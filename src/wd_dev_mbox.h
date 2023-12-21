@@ -13,18 +13,16 @@
  *
  * @brief      Mailbox drivers for wardpdrive
  * 
- * Supports 1 mbox
+ * Supports the first mailbox
  */
 
 #pragma once
 #include <stdint.h>
 
-#define POS_WD_DEV_MBOX_BASE   0xB880
-#define POS_WD_DEV_MBOX_RW     (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x00)))
-#define POS_WD_DEV_MBOX_PEEK   (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x10)))
-#define POS_WD_DEV_MBOX_SENDER (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x14)))
+#define POS_WD_DEV_MBOX_BASE   0x3F00B880
+#define POS_WD_DEV_MBOX_READ   (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x00)))
 #define POS_WD_DEV_MBOX_STATUS (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x18)))
-#define POS_WD_DEV_MBOX_CONFIG (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x3C)))
+#define POS_WD_DEV_MBOX_WRITE  (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x20)))
 
 enum pos_wd_dev_mbox_channel {
     POS_WD_DEV_MBOX_CHANNEL_POWER =            0,
