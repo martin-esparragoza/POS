@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 bool pos_wd_dev_sdhost_init() {
-    struct pos_wd_dev_mbox_propint_buf * buffer = __builtin_alloca_with_align(256, 64);
+    struct pos_wd_dev_mbox_propint_buf * buffer = __builtin_alloca_with_align(256, 128);
     pos_wd_dev_mbox_propint_buf_new(buffer, POS_WD_DEV_MBOX_PROPINT_CODE_REQ);
     uint32_t device_id = 0; // SD 
     pos_wd_dev_mbox_propint_buf_addtag(buffer, 0x00020001, 0, &device_id, sizeof(device_id));
