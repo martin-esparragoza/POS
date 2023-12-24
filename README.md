@@ -21,3 +21,7 @@ To get docs run ```doxygen Doxyfile```
 
 # Features
 POS is a minimal operating system that is meant to satisfy the needs to hobbyists. It is not truly real time however operations should be very much so prioritized. It is designed to be fast.
+
+# Driver Standards
+* Registers are to be #defined as the VALUE of a volatile pointer
+* Bufferes + others are meant to be structures
