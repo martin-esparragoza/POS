@@ -35,16 +35,18 @@ static inline void print_bin(void (* const write_char)(char), intmax_t val) {
     uintmax_t mask = 1;
     signed char offset = 0;
 #if BIT == 32
-    offset = __builtin_ctz(val);
+    offset = -__builtin_clz(val);
 #else
-    offset = __builtin_ctzll(val);
+    offset = -__builtin_clzll(val);
 #endif
+    offset += BIT;
 
-    if (val == 0) {
+    // Undef value for clz with param 0
+    if (offset < 0 || val == 0) {
         offset = 0;
+    } else {
+        offset--;
     }
-
-    offset = 63;
 
     mask <<= offset;
 
@@ -85,7 +87,7 @@ static inline void print_hex(void (*const write_char)(char), uintmax_t val) {
     }
 }
 
-void pos_wd_fprintf(void (* const write_char)(char), const char * format, ...) {
+void wd_fprintf(void (* const write_char)(char), const char * format, ...) {
     va_list args;
     va_start(args, format);
 

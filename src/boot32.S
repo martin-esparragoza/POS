@@ -9,7 +9,7 @@
 .extern __start
 .extern __bss_start
 .extern __bss_end
-.extern pos_wd_main
+.extern wd_main
 
 .section .text
     .global _pos_boot_start
@@ -35,7 +35,7 @@
             pophs {r0-r2}
             // Ticking time bomb :) (maybe)
             movhs lr, pos_boot_halt
-            bhs pos_wd_main
+            bhs wd_main
             
             strb r0, [r1], 1
             b 1b
@@ -48,4 +48,4 @@
         b pos_boot_halt
 
 .section .data
-    .ascii "POS_WD SIG 32 BIT CODE"
+    .ascii "wd SIG 32 BIT CODE"

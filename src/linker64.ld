@@ -28,6 +28,4 @@ SECTIONS {
         *( .bss );
         __bss_end = .;
     }
-    
-    /* a very crude interfacing library will be used for things such as filesystem io, printing, and process creation */
 }

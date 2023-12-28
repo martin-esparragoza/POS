@@ -19,21 +19,21 @@
 #pragma once
 #include <stdint.h>
 
-#define POS_WD_DEV_MBOX_BASE   0x3F00B880
-#define POS_WD_DEV_MBOX_READ   (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x00)))
-#define POS_WD_DEV_MBOX_STATUS (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x18)))
-#define POS_WD_DEV_MBOX_WRITE  (*((volatile uint32_t *) (POS_WD_DEV_MBOX_BASE + 0x20)))
+#define WD_DEV_MBOX_BASE   0x3F00B880
+#define WD_DEV_MBOX_READ   (*((volatile uint32_t *) (WD_DEV_MBOX_BASE + 0x00)))
+#define WD_DEV_MBOX_STATUS (*((volatile uint32_t *) (WD_DEV_MBOX_BASE + 0x18)))
+#define WD_DEV_MBOX_WRITE  (*((volatile uint32_t *) (WD_DEV_MBOX_BASE + 0x20)))
 
-enum pos_wd_dev_mbox_channel {
-    POS_WD_DEV_MBOX_CHANNEL_POWER =            0,
-    POS_WD_DEV_MBOX_CHANNEL_FB =               1,
-    POS_WD_DEV_MBOX_CHANNEL_VUART =            2,
-    POS_WD_DEV_MBOX_CHANNEL_VCHIQ =            3,
-    POS_WD_DEV_MBOX_CHANNEL_LED =              4,
-    POS_WD_DEV_MBOX_CHANNEL_BUTTON =           5,
-    POS_WD_DEV_MBOX_CHANNEL_TOUCH_SCREEN =     6,
-    POS_WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC = 8,
-    POS_WD_DEV_MBOX_CHANNEL_PROPERTY_VCTOARM = 9,
+enum wd_dev_mbox_channel {
+    WD_DEV_MBOX_CHANNEL_POWER =            0,
+    WD_DEV_MBOX_CHANNEL_FB =               1,
+    WD_DEV_MBOX_CHANNEL_VUART =            2,
+    WD_DEV_MBOX_CHANNEL_VCHIQ =            3,
+    WD_DEV_MBOX_CHANNEL_LED =              4,
+    WD_DEV_MBOX_CHANNEL_BUTTON =           5,
+    WD_DEV_MBOX_CHANNEL_TOUCH_SCREEN =     6,
+    WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC = 8,
+    WD_DEV_MBOX_CHANNEL_PROPERTY_VCTOARM = 9,
 };
 
 /**
@@ -45,7 +45,7 @@ enum pos_wd_dev_mbox_channel {
  * 
  * Discards messages not meant for it
  */
-uint32_t pos_wd_dev_mbox_read(enum pos_wd_dev_mbox_channel channel);
+uint32_t wd_dev_mbox_read(enum wd_dev_mbox_channel channel);
 
 /**
  * @brief      Write to mbox channel
@@ -53,7 +53,7 @@ uint32_t pos_wd_dev_mbox_read(enum pos_wd_dev_mbox_channel channel);
  * @param[in]  channel  Channel
  * @param[in]  data     Data to write
  */
-void pos_wd_dev_mbox_write(enum pos_wd_dev_mbox_channel channel, uint32_t data);
+void wd_dev_mbox_write(enum wd_dev_mbox_channel channel, uint32_t data);
 
 /**
  * @}

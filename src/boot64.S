@@ -7,7 +7,7 @@
 .extern __start
 .extern __bss_start
 .extern __bss_end
-.extern pos_wd_main
+.extern wd_main
 
 .section .text
     .global _pos_boot_start
@@ -36,7 +36,7 @@
             ldr x1, [sp], 16
             ldr x0, [sp], 16
             mov lr, pos_boot_halt
-            b pos_wd_main
+            b wd_main
         
         // Return for error code :(
     
@@ -46,4 +46,4 @@
         b pos_boot_halt
 
 .section .data
-    .ascii "POS_WD SIG 64 BIT CODE"
+    .ascii "wd SIG 64 BIT CODE"

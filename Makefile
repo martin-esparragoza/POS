@@ -7,14 +7,16 @@ ASMLINK =
 LINKFLAGS = -ffreestanding -O1 -nostdlib
 LINKLINK = -lgcc
 BIT = 32
+STD = libstd.a # Hilariously jank but whatever
 
 # DEFAULT: pi3b
 PIV = PI3B
 
 ifeq ($(PIV),PI2)
-	CC = arm-none-eabi-gcc
+	CC = arm-none-eabi-as
 	ASM = arm-none-eabi-gcc
 	LINK = arm-none-eabi-gcc
+	AR = arm-none-eabi-ar
 	OBJCOPY = arm-none-eabi-objcopy
 	CFLAGS += -mcpu=cortex-a7 -mabi=aapcs
 	ASMFLAGS += -mcpu=cortex-a7
@@ -26,13 +28,14 @@ else ifdef ($(PIV),PI4B)
 	CFLAGS += -mcpu=cortex-a72
 	ASMFLAGS += -mcpu=cortex-a72
 else
-$(error "BAD PI")
+	$(error "BAD PI")
 endif
 
 ifeq ($(PIV),$(filter $(PIV),PI3 PI3AP PI3B PI4B))
 	CC = aarch64-none-elf-gcc
 	ASM = aarch64-none-elf-as
-	LINK = aarch64-none-elf-gcc 
+	LINK = aarch64-none-elf-gcc
+	AR = aarch64-none-elf-ar
 	OBJCOPY = aarch64-none-elf-objcopy
 	CFLAGS += -mabi=lp64
 	BIT = 64

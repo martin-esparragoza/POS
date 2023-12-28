@@ -33,10 +33,10 @@ clean:
 	
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(CLINK)
-	
+
 # TODO: make this not garbage
 %.img: $(OBJS)
-	$(LINK) -T $(LINKFILE) -o intermediate.elf $(LINKFLAGS) $(OBJS) $(LINKLINK)
+	$(LINK) -T $(LINKFILE) -o intermediate.elf $(LINKFLAGS) $(OBJS) ../lib/$(STD) $(LINKLINK)
 	$(OBJCOPY) intermediate.elf -O binary $@
 	
 ifneq ($(MAKECMDGOALS),clean)

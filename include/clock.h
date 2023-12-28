@@ -1,9 +1,10 @@
 /**
  * @file
  *
- * @brief      Time or clock cycle related functions
+ * @brief      Clock cycle related functions
  *
- * Used for easy delays for now
+ * Used for easy delays for now <br>
+ * <b>Freestanding file</b>
  *
  * @addtogroup WD
  * @{
@@ -18,6 +19,6 @@
  *
  * @param[in]  count  # of clock cycles to execute
  */
-void pos_wd_delay(unsigned long count);
+void delay_cycles(unsigned long count);
 
 /** @} */

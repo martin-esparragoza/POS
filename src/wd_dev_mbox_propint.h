@@ -1,6 +1,4 @@
 /**
- * @file
- * 
  * @addtogroup WD
  * @{
  * 
@@ -11,94 +9,166 @@
  * @{
  * 
  * @defgroup   PROPINT
- * Property interface
  * @{
  *
- * @brief      Propint interface drivers
+ * @brief      Property interface handler
+ *
  */
 
 #pragma once
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
-struct __attribute__((packed)) pos_wd_dev_mbox_propint_tag {
+struct wd_dev_mbox_propint_tag {
     uint32_t identifier;
-    uint32_t size;       /**< Size of value buffer in bytes */
-    uint32_t code;       /**< Request code that can be set */
-    uint32_t value[];    /**< Cheat to align to 32 bit */
+    uint32_t valuesize;
+    uint32_t code;
+    uint8_t value[];
+} __attribute__((packed));
+
+struct wd_dev_mbox_propint_buffer {
+    uint32_t size;
+    uint32_t code;
+    struct wd_dev_mbox_propint_tag tags[];
+} __attribute__((packed));
+
+/**
+ * @brief      Codes for buffer & tags
+ */
+enum wd_dev_mbox_propint_buffer_code {
+    WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQ =  0,          /**< Send a request */
+    WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQS = 0x80000000, /**< Successful request */
+    WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQF = 0x80000001  /**< Failed request */
 };
 
 /**
- * @breif      Property interface util buffer
+ * @brief      Constructor for buffer
  * 
- * If you want to send/rcv this
- * you need to align it to a 32
- * bit boudary <br>
+ * Assumes that the code to add WILL be a request buffer
+ * 
+ * Sets default variables like size & code
+ *
+ * @param[in]  buffer  16 bit aligned buffer ptr
+ * @param[in]  code    Code
  */
-struct __attribute__((packed)) pos_wd_dev_mbox_propint_buf {
-    uint32_t size;                             /**< Size in bytes that is set by writer */
-    uint32_t code;                             /**< Request/response code */
-    struct pos_wd_dev_mbox_propint_tag tags[];
-};
-
-enum pos_wd_dev_mbox_propint_code {
-    POS_WD_DEV_MBOX_PROPINT_CODE_REQ =     0,
-    POS_WD_DEV_MBOX_PROPINT_CODE_REQSUC =  0x80000000, /**< Request successful. Used in responses. */
-    POS_WD_DEV_MBOX_PROPINT_CODE_REQFAIL = 0x80000001  /**< Used in responses */
-};
+void wd_dev_mbox_propint_buffer_new(struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
- * @brief      Inits values for propint buffer writer
+ * @brief      Adds a REQUEST tag
+ * 
+ * Assumes that the type of the tag will be a request tag <br>
+ * Remember to add space for response value
  *
- * @param[in]  buffer  Pointer to buffer allocated some way or another
- */
-void pos_wd_dev_mbox_propint_buf_new(struct pos_wd_dev_mbox_propint_buf * buffer, enum pos_wd_dev_mbox_propint_code code);
-
-/**
- * @brief      Adds a tag to a propint buffer
- *
+ * @param[in]  buffer      Buffer
  * @param[in]  identifier  Identifier
- * @param[in]  code        Code
  * @param[in]  value       Value
- * @param[in]  valuesize   Size of value in bytes
+ * @param[in]  valuesize   Length of value in bytes
  * 
- * @see        <a href = "https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface">Docs</a>
+ * @return     Pointer to newly created tag
+ * 
+ * @see        <a href = "https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface">Identifiers</a>
  */
-void pos_wd_dev_mbox_propint_buf_addtag(struct pos_wd_dev_mbox_propint_buf * buffer, uint32_t identifier, uint32_t code, void* value, uint32_t valuesize);
+struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_addtag(struct wd_dev_mbox_propint_buffer * buffer, uint32_t identifier, void * value, uint32_t valuesize);
 
 /**
- * @brief      Resets position in buffer
+ * @brief      Adds the final 0 to the buffer
  * 
- * Does not clear.
+ * You should not write to the buffer after this is done.
+ * The only thing you can do is send.
  *
  * @param[in]  buffer  Buffer
  */
-void pos_wd_dev_mbox_propint_buf_reset(struct pos_wd_dev_mbox_propint_buf * buffer);
+void wd_dev_mbox_propint_buffer_addendtag(struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
- * @brief      Adds the ending 0 to a buffer
+ * @brief      Get the size of buffer in bytes
  * 
- * Adding new tags to the
- * buffer will result in a
- * corrupted buffer.
- *
- * @param      buffer  Buffer
- */
-void pos_wd_dev_mbox_propint_buf_addendtag(struct pos_wd_dev_mbox_propint_buf * buffer);
-
-/**
- * @brief      Send buffer to MBOX
- *
  * @param[in]  buffer  Buffer
+ *
+ * @return     Size
  */
-void pos_wd_dev_mbox_propint_sendbuf(struct pos_wd_dev_mbox_propint_buf * buffer);
+uint32_t wd_dev_mbox_propint_buffer_getsize(struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
- * @brief      Get tag from propint buffer
+ * @brief      Get request/response code of buffer
+ * 
+ * @param[in]  buffer  Buffer
+ *
+ * @return     Code
+ */
+enum wd_dev_mbox_propint_buffer_code wd_dev_mbox_propint_buffer_getcode(struct wd_dev_mbox_propint_buffer * buffer);
+
+/**
+ * @brief      Get tag from buffer (assuming properly made yk)
+ * 
+ * Remember to add your spaces for your buffers <br>
+ * DOES NOT DO MAPPING! LAZY IMPLEMENTATION!
  *
  * @param[in]  buffer  Buffer
  * @param[in]  index   Index of tag
  *
- * @return     NULL if cannot find
+ * @return     Pointer to tag NULL if reached end
  */
-struct pos_wd_dev_mbox_propint_tag * pos_wd_dev_mbox_propint_buf_gettag(struct pos_wd_dev_mbox_propint_buf * buffer, unsigned index);
+struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(struct wd_dev_mbox_propint_buffer * buffer, size_t index);
+
+/**
+ * @brief      Sends buffer to mailbox
+ *
+ * @param[in]  buffer  Buffer
+ */
+void wd_dev_mbox_propint_buffer_send(struct wd_dev_mbox_propint_buffer * buffer);
+
+/**
+ * @brief      Get identifier of tag
+ * 
+ * @param[in]  tag   Tag
+ *
+ * @return     Tag identifier
+ */
+uint32_t wd_dev_mbox_propint_tag_getidentifier(struct wd_dev_mbox_propint_tag * tag);
+
+/**
+ * @brief      Get size of value of tag
+ *
+ * @param[in]  tag   Tag
+ *
+ * @return     Tag value size in bytes
+ */
+uint32_t wd_dev_mbox_propint_tag_getvaluesize(struct wd_dev_mbox_propint_tag * tag);
+
+/**
+ * @brief      Get size returned
+ * 
+ * Gets bits 0-30 in response code <br>
+ * Useful for ascii value return
+ *
+ * @param      tag   Tag
+ *
+ * @return     Tag value size in bytes
+ */
+uint32_t wd_dev_mbox_propint_buffer_getreturnvaluesize(struct wd_dev_mbox_propint_tag * tag);
+
+/**
+ * @brief      Tells you if tag was successfully processed
+ *
+ * @param[in]  tag   Tag
+ *
+ * @return     False if not true if so
+ */
+bool wd_dev_mbox_propint_tag_issuccessful(struct wd_dev_mbox_propint_tag * tag);
+
+/**
+ * @brief      Returns pointer to value
+ *
+ * @param[in]  tag   Tag
+ *
+ * @return     Value ptr
+ */
+void * wd_dev_mbox_propint_tag_getvalue(struct wd_dev_mbox_propint_tag * tag);
+
+/**
+ * @}
+ * @}
+ * @}
+ */

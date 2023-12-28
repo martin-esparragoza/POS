@@ -25,7 +25,7 @@
  * @param[in]  format      Fstring
  * @param[in]  vargs       Data format
  */
-void pos_wd_fprintf(void (* const write_char)(char), const char * format, ...);
+void wd_fprintf(void (* const write_char)(char), const char * format, ...);
 
 /**
  * @}

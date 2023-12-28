@@ -1,7 +1,7 @@
-#include "wd_mem.h"
+#include "../include/memory.h"
 #include <stdint.h>
 
-void * pos_wd_memcpy(void * src, void * dest, unsigned len) {
+void * memcpy(void * dest, void * src, size_t len) {
     uint8_t * d = dest;
     while (len--)
         *(d++) = *((uint8_t *) src++);
@@ -9,7 +9,8 @@ void * pos_wd_memcpy(void * src, void * dest, unsigned len) {
     return dest;
 }
 
-volatile void * pos_wd_memcpy_vd(void * src, volatile void * dest, unsigned len) {
+
+volatile void * memcpy_vd(volatile void * dest, void * src, unsigned len) {
     volatile uint8_t * d = dest;
     while (len--)
         *(d++) = *((uint8_t* ) src++);
@@ -17,7 +18,7 @@ volatile void * pos_wd_memcpy_vd(void * src, volatile void * dest, unsigned len)
     return dest;
 }
 
-void * pos_wd_memcpy_vs(volatile void * src, void * dest, unsigned len) {
+void * memcpy_vs(void * dest, volatile void * src, unsigned len) {
     uint8_t * d = dest;
     while (len--)
         *(d++) = *((volatile uint8_t *) src++);
@@ -25,7 +26,7 @@ void * pos_wd_memcpy_vs(volatile void * src, void * dest, unsigned len) {
     return dest;
 }
 
-volatile void * pos_wd_memcpy_vds(volatile void * src, volatile void * dest, unsigned len) {
+volatile void * memcpy_vds(volatile void * dest, volatile void * src, unsigned len) {
     volatile uint8_t * d = dest;
     while (len--)
         *(d++) = *((volatile uint8_t *) src++);
@@ -33,10 +34,10 @@ volatile void * pos_wd_memcpy_vds(volatile void * src, volatile void * dest, uns
     return dest;
 }
 
-void * pos_wd_memset(void * src, unsigned char val, unsigned len) {
-    uint8_t * s = src;
+void * memset(void * dest, unsigned char val, size_t len) {
+    uint8_t * d = dest;
     while (len--)
-        *(s++) = val;
+        *(d++) = val;
 
-    return src;
+    return dest;
 }
