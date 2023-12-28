@@ -1,4 +1,6 @@
 /**
+ * @file
+ *
  * @addtogroup WD
  * @{
  * 
