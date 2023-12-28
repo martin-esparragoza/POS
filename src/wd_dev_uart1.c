@@ -1,20 +1,14 @@
 #include "wd_dev_uart1.h"
-#include "wd_dev_gen.h"
+#include "wd_dev.h"
 #include "wd_dev_gpio.h"
+#include "wd_dev_mbox_propint.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
 
 // Random reg &s are to clobber registers in a jank way
 
-void wd_dev_uart1_init() {
-    wd_dev_gpio_setpupd(14, WD_DEV_GPIO_PUPD_DOWN);
-    wd_dev_gpio_setpupd(15, WD_DEV_GPIO_PUPD_DOWN);
-    wd_dev_gpio_setpinfunction(14, WD_DEV_GPIO_FUN_ALT5); // Transfer line
-    wd_dev_gpio_setpinfunction(15, WD_DEV_GPIO_FUN_ALT5); // Recieve line
-    //wd_dev_gpio_clr(14);
-    //wd_dev_gpio_clr(15);
-    
+bool wd_dev_uart1_init() {
     // Initialize the UART1 (mini uart)
     wd_dev_uart1_enable();
     WD_DEV_UART1_AUX_MU_CNTL_REG = 0; // Disable stuff like auto folow control
@@ -24,15 +18,37 @@ void wd_dev_uart1_init() {
     wd_dev_uart1_enable_transmitter();
 }
 
+void wd_dev_uart1_init_gpio() {
+    wd_dev_gpio_setpupd(14, WD_DEV_GPIO_PUPD_DOWN);
+    wd_dev_gpio_setpupd(15, WD_DEV_GPIO_PUPD_DOWN);
+    wd_dev_gpio_setpinfunction(14, WD_DEV_GPIO_FUN_ALT5); // Transfer line
+    wd_dev_gpio_setpinfunction(15, WD_DEV_GPIO_FUN_ALT5); // Recieve line
+}
+
 void wd_dev_uart1_set_enabled(bool enabled) {
     uint32_t savebits = WD_DEV_GEN_AUX_ENABLES & 6;
     WD_DEV_GEN_AUX_ENABLES = savebits | enabled;
 }
 
-bool wd_dev_uart1_set_baud(unsigned baud) {
-    unsigned reg = (250000000 / (8 * baud)) - 1;
-    if (reg > 0xFFFF)
+bool wd_dev_uart1_setbaud(unsigned baud) {
+    // Get clock rate
+    struct wd_dev_mbox_propint_buffer * buffer = __builtin_alloca_with_align(64, 128);
+    wd_dev_mbox_propint_buffer_new(buffer);
+    uint32_t value[] = {4 /* clock id of core */, 0 /* placeholder for returned rate */};
+    wd_dev_mbox_propint_buffer_addtag(buffer, 0x00030002 /* get clock rate */, value, sizeof(value));
+    wd_dev_mbox_propint_buffer_addendtag(buffer);
+    wd_dev_mbox_propint_buffer_send(buffer);
+
+    struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
+    if (wd_dev_mbox_propint_buffer_getcode(buffer) != WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQS ||
+       tag == NULL ||
+       !wd_dev_mbox_propint_tag_issuccessful(tag))
         return false;
+
+    unsigned reg = (((uint32_t *) tag->value)[1] / (8 * baud)) - 1;
+    if (reg > 0xFFFF) {
+        return false;
+    }
 
     WD_DEV_UART1_AUX_MU_BAUD_REG = reg;
     return true;

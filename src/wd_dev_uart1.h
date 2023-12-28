@@ -21,7 +21,7 @@
  */
 
 #pragma once
-#include "wd_dev_gen.h"
+#include "wd_dev.h"
 #include "wd_stdio.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -40,7 +40,7 @@
 #define WD_DEV_UART1_AUX_MU_BAUD_REG (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x68)))
 
 /**
- * @brief      Init the UART1
+ * @brief      Init the UART1 internally
  * 
  * Sets GPIO and cleans. <br>
  * Sets baud to 115200 <br>
@@ -49,7 +49,15 @@
  * 
  * @return False if baud set fail
  */
-void wd_dev_uart1_init();
+bool wd_dev_uart1_init();
+
+/**
+ * @brief      Sets the GPIO pins to be ready to transmit
+ * 
+ * Used for real life usage but this can be instead not ran for QEMU debugging <br>
+ * <b>CALL THIS BEFORE wd_dev_uart1_init()</br>
+ */
+void wd_dev_uart1_init_gpio();
 
 /**
  * @brief      Turns on/off the UART1
@@ -66,14 +74,11 @@ void wd_dev_uart1_set_enabled(bool enabled);
 /**
  * @brief      Sets the baud rate of the UARt1
  * 
- * Assumes the system clock is at 250MHz <br>
- * Therefore the minimum and maximum baud rates are 476 baud and 31.25 mega baud respectively
- *
  * @param[in]  baud  The baud rate
  *
- * @return     False if calculated buad value is unable to be fit into 16 bits (too big)
+ * @return     False if calculated buad value is unable to be fit into 16 bits (too big) or mailbox error
  */
-bool wd_dev_uart1_set_baud(unsigned baud);
+bool wd_dev_uart1_setbaud(unsigned baud);
 
 /**
  * @brief      Write a single character to the FIFO
