@@ -17,10 +17,10 @@
  */
 
 #pragma once
-#include "wd_dev_gen.h"
+#include "wd_dev.h"
 #include <stdint.h>
 
-#define WD_DEV_GPIO_BASE      0x3F200000
+#define WD_DEV_GPIO_BASE      WD_DEV_BASE + 0x00200000
 #define WD_DEV_GPIO_GPFSEL0   (*((volatile uint32_t *) (WD_DEV_GPIO_BASE + 0x00)))
 #define WD_DEV_GPIO_GPFSEL1   (*((volatile uint32_t *) (WD_DEV_GPIO_BASE + 0x04)))
 #define WD_DEV_GPIO_GPFSEL2   (*((volatile uint32_t *) (WD_DEV_GPIO_BASE + 0x08)))
@@ -94,12 +94,19 @@ enum wd_dev_gpio_pupd {
 /**
  * @brief      Sets a specific pin to pull up, pull down, or float
  * 
- * This could definitley be better and just be 1 write. However, its the WD and I don't care
- *
  * @param[in]  pin   Pin should be 0-57. Checks are not done
  * @param[in]  mode  See enum
  */
 void wd_dev_gpio_setpupd(unsigned char pin, enum wd_dev_gpio_pupd mode);
+
+/**
+ * @brief      Set multiple pins to the same mode
+ *
+ * @param      pins     All pins to set
+ * @param[in]  pinslen  Number of pins given in array
+ * @param[in]  mode     Mode
+ */
+void wd_dev_gpio_setpupd_multi(const unsigned char pins[], unsigned pinslen, enum wd_dev_gpio_pupd mode);
 
 /**
  * @brief      Clears a pin

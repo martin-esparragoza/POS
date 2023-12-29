@@ -44,6 +44,28 @@ void wd_dev_gpio_setpupd(unsigned char pin, enum wd_dev_gpio_pupd mode) {
     *reg ^= 1 << pin;
 }
 
+void wd_dev_gpio_setpupd_multi(const unsigned char pins[], unsigned pinslen, enum wd_dev_gpio_pupd mode) {
+    uint32_t reserved = WD_DEV_GPIO_GPPUD & 0xFFFFFFFC;
+    WD_DEV_GPIO_GPPUD = reserved | mode;
+    delay_cycles(150);
+
+    uint32_t reg1 = WD_DEV_GPIO_GPPUDCLK0;
+    uint32_t reg2 = WD_DEV_GPIO_GPPUDCLK1;
+
+    for (unsigned i = 0; i < pinslen; i++) {
+        *(pins[i] <= 31 ? &reg1 : &reg2) |= 1 << (pins[i] % 31);
+    }
+
+    WD_DEV_GPIO_GPPUDCLK0 = reg1;
+    WD_DEV_GPIO_GPPUDCLK1 = reg2;
+
+    delay_cycles(150);
+
+    WD_DEV_GPIO_GPPUD = reserved;
+    WD_DEV_GPIO_GPPUDCLK0 ^= reg1;
+    WD_DEV_GPIO_GPPUDCLK1 ^= reg2;
+}
+
 void wd_dev_gpio_clr(unsigned char pin) {
     volatile uint32_t * reg = pin <= 31 ? &WD_DEV_GPIO_GPCLR0 : &WD_DEV_GPIO_GPCLR1;
     *reg |= 1 << (pin % 31);
