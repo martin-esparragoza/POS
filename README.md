@@ -1,8 +1,10 @@
 # POS
-Raspberry Pi FAKE real-time operating system. For cortex processors only.
+Raspberry Pi soft real-time operating system. For cortex processors only.
 
-# FAKE?
-POS is a FAKE real-time operating system. It does not stick to the traditional definition of a real time operating system as it does not GUARANTEE that something is handled instantly. Hardware access will not be ripped out of a driver's hands instantly and instead it will be given VERY minimal time to panic and store state. This does not change the fact that drivers should be designed to panic. 
+# Soft?
+* Critical periods are allowed
+* There is NO clock. Processes pass priority when done
+* No memory protection
 
 # Supported RPIs
 Anything with a cortex
