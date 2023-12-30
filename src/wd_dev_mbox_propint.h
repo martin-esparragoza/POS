@@ -11,6 +11,7 @@
  * @{
  * 
  * @defgroup   PROPINT
+ * Property inferfacee
  * @{
  *
  * @brief      Property interface handler
@@ -54,7 +55,7 @@ enum wd_dev_mbox_propint_buffer_code {
  * @param[in]  buffer  16 bit aligned buffer ptr
  * @param[in]  code    Code
  */
-void wd_dev_mbox_propint_buffer_new(struct wd_dev_mbox_propint_buffer * buffer);
+void wd_dev_mbox_propint_buffer_new(volatile struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
  * @brief      Adds a REQUEST tag
@@ -71,7 +72,7 @@ void wd_dev_mbox_propint_buffer_new(struct wd_dev_mbox_propint_buffer * buffer);
  * 
  * @see        <a href = "https://github.com/raspberrypi/firmware/wiki/Mailbox-property-interface">Identifiers</a>
  */
-struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_addtag(struct wd_dev_mbox_propint_buffer * buffer, uint32_t identifier, void * value, uint32_t valuesize);
+volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_addtag(volatile struct wd_dev_mbox_propint_buffer * buffer, uint32_t identifier, void * value, uint32_t valuesize);
 
 /**
  * @brief      Adds the final 0 to the buffer
@@ -81,7 +82,7 @@ struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_addtag(struct wd_dev
  *
  * @param[in]  buffer  Buffer
  */
-void wd_dev_mbox_propint_buffer_addendtag(struct wd_dev_mbox_propint_buffer * buffer);
+void wd_dev_mbox_propint_buffer_addendtag(volatile struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
  * @brief      Get the size of buffer in bytes
@@ -90,7 +91,7 @@ void wd_dev_mbox_propint_buffer_addendtag(struct wd_dev_mbox_propint_buffer * bu
  *
  * @return     Size
  */
-uint32_t wd_dev_mbox_propint_buffer_getsize(struct wd_dev_mbox_propint_buffer * buffer);
+uint32_t wd_dev_mbox_propint_buffer_getsize(volatile struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
  * @brief      Get request/response code of buffer
@@ -99,7 +100,7 @@ uint32_t wd_dev_mbox_propint_buffer_getsize(struct wd_dev_mbox_propint_buffer * 
  *
  * @return     Code
  */
-enum wd_dev_mbox_propint_buffer_code wd_dev_mbox_propint_buffer_getcode(struct wd_dev_mbox_propint_buffer * buffer);
+enum wd_dev_mbox_propint_buffer_code wd_dev_mbox_propint_buffer_getcode(volatile struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
  * @brief      Get tag from buffer (assuming properly made yk)
@@ -112,14 +113,14 @@ enum wd_dev_mbox_propint_buffer_code wd_dev_mbox_propint_buffer_getcode(struct w
  *
  * @return     Pointer to tag NULL if reached end
  */
-struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(struct wd_dev_mbox_propint_buffer * buffer, size_t index);
+volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(volatile struct wd_dev_mbox_propint_buffer * buffer, size_t index);
 
 /**
  * @brief      Sends buffer to mailbox
  *
  * @param[in]  buffer  Buffer
  */
-void wd_dev_mbox_propint_buffer_send(struct wd_dev_mbox_propint_buffer * buffer);
+void wd_dev_mbox_propint_buffer_send(volatile struct wd_dev_mbox_propint_buffer * buffer);
 
 /**
  * @brief      Get identifier of tag
@@ -128,7 +129,7 @@ void wd_dev_mbox_propint_buffer_send(struct wd_dev_mbox_propint_buffer * buffer)
  *
  * @return     Tag identifier
  */
-uint32_t wd_dev_mbox_propint_tag_getidentifier(struct wd_dev_mbox_propint_tag * tag);
+uint32_t wd_dev_mbox_propint_tag_getidentifier(volatile struct wd_dev_mbox_propint_tag * tag);
 
 /**
  * @brief      Get size of value of tag
@@ -137,7 +138,7 @@ uint32_t wd_dev_mbox_propint_tag_getidentifier(struct wd_dev_mbox_propint_tag * 
  *
  * @return     Tag value size in bytes
  */
-uint32_t wd_dev_mbox_propint_tag_getvaluesize(struct wd_dev_mbox_propint_tag * tag);
+uint32_t wd_dev_mbox_propint_tag_getvaluesize(volatile struct wd_dev_mbox_propint_tag * tag);
 
 /**
  * @brief      Get size returned
@@ -149,7 +150,7 @@ uint32_t wd_dev_mbox_propint_tag_getvaluesize(struct wd_dev_mbox_propint_tag * t
  *
  * @return     Tag value size in bytes
  */
-uint32_t wd_dev_mbox_propint_buffer_getreturnvaluesize(struct wd_dev_mbox_propint_tag * tag);
+uint32_t wd_dev_mbox_propint_buffer_getreturnvaluesize(volatile struct wd_dev_mbox_propint_tag * tag);
 
 /**
  * @brief      Tells you if tag was successfully processed
@@ -158,7 +159,7 @@ uint32_t wd_dev_mbox_propint_buffer_getreturnvaluesize(struct wd_dev_mbox_propin
  *
  * @return     False if not true if so
  */
-bool wd_dev_mbox_propint_tag_issuccessful(struct wd_dev_mbox_propint_tag * tag);
+bool wd_dev_mbox_propint_tag_issuccessful(volatile struct wd_dev_mbox_propint_tag * tag);
 
 /**
  * @brief      Returns pointer to value
@@ -167,7 +168,7 @@ bool wd_dev_mbox_propint_tag_issuccessful(struct wd_dev_mbox_propint_tag * tag);
  *
  * @return     Value ptr
  */
-void * wd_dev_mbox_propint_tag_getvalue(struct wd_dev_mbox_propint_tag * tag);
+volatile void * wd_dev_mbox_propint_tag_getvalue(volatile struct wd_dev_mbox_propint_tag * tag);
 
 /**
  * @}
