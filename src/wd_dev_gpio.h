@@ -19,6 +19,7 @@
 #pragma once
 #include "wd_dev.h"
 #include <stdint.h>
+#include <stddef.h>
 
 #define WD_DEV_GPIO_BASE      WD_DEV_BASE + 0x00200000
 #define WD_DEV_GPIO_GPFSEL0   (*((volatile uint32_t *) (WD_DEV_GPIO_BASE + 0x00)))
@@ -81,15 +82,6 @@ enum wd_dev_gpio_fun {
 void wd_dev_gpio_setpinfunction(unsigned char pin, enum wd_dev_gpio_fun fun);
 
 /**
- * @brief      Sets all pins given to use an alternate function
- *
- * @param[in]  pins     Pins
- * @param[in]  pinslen  Number of pins
- * @param[in]  fun      Function
- */
-void wd_dev_gpio_setpinfunction_multi(const unsigned char pins[], size_t pinslen, enum wd_dev_gpio_fun fun);
-
-/**
  * @brief      Pull up / pull down
  * 
  * Allows you to set a gpio pin to pull up or pull down or float
@@ -107,6 +99,15 @@ enum wd_dev_gpio_pupd {
  * @param[in]  mode  See enum
  */
 void wd_dev_gpio_setpupd(unsigned char pin, enum wd_dev_gpio_pupd mode);
+
+/**
+ * @brief      Set multiple pins to the same mode
+ *
+ * @param      pins     All pins to set
+ * @param[in]  pinslen  Number of pins given in array
+ * @param[in]  mode     Mode
+ */
+void wd_dev_gpio_setpupd_multi(const unsigned char pins[], size_t pinslen, enum wd_dev_gpio_pupd mode);
 
 /**
  * @brief      Clears a pin
