@@ -30,7 +30,6 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     wd_dev_uart1_printf("\n");
 
     wd_dev_mbox_propint_buffer_send(buffer);
-    delay_cycles(50000000);
 
     for (unsigned i = 0; i < buffer->size / 4; i++) {
         wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
@@ -44,7 +43,6 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     }
 
     // Now set GPIO pins (attrociously slow but whatever)
-
     wd_dev_gpio_setpinfunction(47, WD_DEV_GPIO_FUN_INPUT); // GPIO_CD
     wd_dev_gpio_setpinfunction(48, WD_DEV_GPIO_FUN_ALT3);  // GPIO_CLK
     wd_dev_gpio_setpinfunction(49, WD_DEV_GPIO_FUN_ALT3);  // GPIO_CMD
@@ -55,7 +53,7 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     WD_INFO("Set pin functions!\n");
 
     WD_INFO("Before PUPD\n");
-    char pins[] = {47, 48, 49, 50, 51, 52};
+    unsigned char pins[] = {47, 48, 49, 50, 51, 52};
     wd_dev_gpio_setpupd_multi(pins, 4, WD_DEV_GPIO_PUPD_UP);
     WD_INFO("Set pull up / down!\n");
 
