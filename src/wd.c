@@ -5,13 +5,10 @@
  * @}
  */
 
+#include "../include/config.h"
+#include "wd_debug.h"
+#include "wd_dev_emmc.h"
 #include <stdint.h>
-#include "wd_dev_uart1.h"
-#include "wd_dev_mbox.h"
-#include "wd_dev_gpio.h"
-#include "wd_stdio.h"
-#include "wd_dev_sdhost.h"
-#include "wd_dev_mbox_propint.h"
 #include <stdint.h>
 
 static uintmax_t wd_machine_id;
@@ -46,42 +43,17 @@ __attribute__((target("arm")))
     wd_machine_id = r1;
     wd_atags = (uintptr_t) r2;
 
+#ifdef UART1_DEBUG_HARDWARE_OUT
+    wd_dev_uart1_init_gpio();
+#endif
+
+#ifdef UART1_DEBUG
     wd_dev_uart1_init();
+#endif
 
-    volatile uint32_t __attribute__((aligned(16))) testbuffer[256];
-    struct wd_dev_mbox_propint_buffer * buffer = (void *) testbuffer;
-    wd_dev_mbox_propint_buffer_new(buffer);
-    uint32_t value[] = {0, 0};
-    wd_dev_mbox_propint_buffer_addtag(buffer, 0x00010005, value, sizeof(value));
-    wd_dev_mbox_propint_buffer_addendtag(buffer);
+    WD_ASSERT_HARD(wd_dev_emmc_init() == WD_DEV_EMMC_ERRC_NONE);
+    WD_INFO("Inited EMMC controller :)");
 
-    wd_dev_uart1_printf("address: 0x%x\n", &buffer1);
-    wd_dev_uart1_printf("address: 0x%x\n", &buffer2);
-    wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) buffer1) & ~0x0F) >> 4);
-    wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) buffer2) & ~0x0F) >> 4);
-    wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) buffer3) & ~0x0F) >> 4);
-    //wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) &testbuffer) & ~0x0F) >> 4);
-    wd_dev_mbox_propint_buffer_send(buffer);
-
-    for (unsigned i = 0; i < 8; i++) {
-        wd_dev_uart1_printf("0x%x ", buffer1[i]);
-    }
-    wd_dev_uart1_printf("\n");
-
-    for (unsigned i = 0; i < 8; i++) {
-        wd_dev_uart1_printf("0x%x ", buffer2[i]);
-    }
-    wd_dev_uart1_printf("\n");
-
-    for (unsigned i = 0; i < 13; i++) {
-        wd_dev_uart1_printf("0x%x ", buffer3[i]);
-    }
-    wd_dev_uart1_printf("\n");
-
-    for (unsigned i = 0; i < 13; i++) {
-        wd_dev_uart1_printf("0x%x ", testbuffer[i]);
-    }
-    wd_dev_uart1_printf("\n");
-
+    wd_panic:
     return 0xDEADBEEF;
 }

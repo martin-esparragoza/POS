@@ -14,7 +14,7 @@ bool wd_dev_uart1_init() {
     WD_DEV_UART1_AUX_MU_CNTL_REG = 0; // Disable stuff like auto folow control
     WD_DEV_UART1_AUX_MU_IER_REG = 0; // Disable interrupts
     wd_dev_uart1_enable_sevenbit();
-    wd_dev_uart1_set_baud(115200);
+    wd_dev_uart1_setbaud(115200);
     wd_dev_uart1_enable_transmitter();
 }
 
@@ -32,14 +32,14 @@ void wd_dev_uart1_set_enabled(bool enabled) {
 
 bool wd_dev_uart1_setbaud(unsigned baud) {
     // Get clock rate
-    struct wd_dev_mbox_propint_buffer * buffer = __builtin_alloca_with_align(64, 128);
+    volatile struct wd_dev_mbox_propint_buffer * buffer = __builtin_alloca_with_align(64, 128);
     wd_dev_mbox_propint_buffer_new(buffer);
     uint32_t value[] = {4 /* clock id of core */, 0 /* placeholder for returned rate */};
     wd_dev_mbox_propint_buffer_addtag(buffer, 0x00030002 /* get clock rate */, value, sizeof(value));
     wd_dev_mbox_propint_buffer_addendtag(buffer);
     wd_dev_mbox_propint_buffer_send(buffer);
 
-    struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
+    volatile struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
     if (wd_dev_mbox_propint_buffer_getcode(buffer) != WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQS ||
        tag == NULL ||
        !wd_dev_mbox_propint_tag_issuccessful(tag))
