@@ -88,7 +88,7 @@ static inline void print_hex(void (* const write_char)(char), uintmax_t val) {
 }
 
 static inline void print_string(void (* const write_char)(char), const char * val) {
-    for (unsigned i = 0; val[i] != '\0'; i++) {
+    for (uintmax_t i = 0; val[i] != '\0'; i++) {
         (*write_char)(val[i]);
     }
 }
@@ -97,7 +97,7 @@ void wd_fprintf(void (* const write_char)(char), const char * format, ...) {
     va_list args;
     va_start(args, format);
 
-    for (unsigned i = 0; format[i] != '\0'; i++) {
+    for (uintmax_t i = 0; format[i] != '\0'; i++) {
         // Expecting format
         if (format[i] == '%') {
             switch (format[(i++) + 1]) {

@@ -48,7 +48,7 @@ bool wd_dev_uart1_setbaud(unsigned baud) {
        !wd_dev_mbox_propint_tag_issuccessful(tag))
         return false;
 
-    unsigned reg = (((uint32_t *) tag->value)[1] / (8 * baud)) - 1;
+    uint32_t reg = (((uint32_t *) wd_dev_mbox_propint_tag_getvalue(tag))[1] / (8 * baud)) - 1;
     if (reg > 0xFFFF) {
         return false;
     }
@@ -67,7 +67,7 @@ void __attribute__((noinline)) wd_dev_uart1_write_char(char data) {
 }
 
 void wd_dev_uart1_write_data(uint8_t * data, size_t length) {
-    unsigned i = 0;
+    size_t i = 0;
     while (i < length) {
         wd_dev_uart1_write_char(data[i++]);
     }

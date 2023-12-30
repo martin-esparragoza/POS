@@ -28,19 +28,7 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     wd_dev_mbox_propint_buffer_addtag(buffer, 0x00038002 /* set clock rate */, valueset, sizeof(valueset));
     wd_dev_mbox_propint_buffer_addendtag(buffer);
 
-    for (unsigned i = 0; i < 16; i++) {
-        wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
-    }
-    wd_dev_uart1_printf("\n");
-
-
     wd_dev_mbox_propint_buffer_send(buffer);
-
-    for (unsigned i = 0; i < 16; i++) {
-        wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
-    }
-    wd_dev_uart1_printf("\n");
-
 
     volatile struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
 
@@ -55,14 +43,10 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
 
     clockrate = ((volatile uint32_t *) wd_dev_mbox_propint_tag_getvalue(tag))[1];
 
-    if (!wd_dev_mbox_propint_tag_issuccessful(tag) ||
-        clockrate == 0) {
-
+    if (!wd_dev_mbox_propint_tag_issuccessful(tag) || clockrate == 0)
         return WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK;
-    }
 
-
-    // Now set GPIO pins (attrociously slow but whatever)
+    // Now set GPIO pins (attrociously done but whatever)
     wd_dev_gpio_setpinfunction(47, WD_DEV_GPIO_FUN_INPUT); // GPIO_CD
     wd_dev_gpio_setpinfunction(48, WD_DEV_GPIO_FUN_ALT3);  // GPIO_CLK
     wd_dev_gpio_setpinfunction(49, WD_DEV_GPIO_FUN_ALT3);  // GPIO_CMD

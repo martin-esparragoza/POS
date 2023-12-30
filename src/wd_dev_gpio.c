@@ -1,3 +1,5 @@
+// TODO: Write this a hell of a lot cleaner
+
 #include "wd_dev_gpio.h"
 #include "wd_dev_uart1.h"
 #include "../include/clock.h"
@@ -17,7 +19,7 @@ void wd_dev_gpio_setpinfunction(unsigned char pin, enum wd_dev_gpio_fun fun) {
         reg = &WD_DEV_GPIO_GPFSEL3;
     } else if (pin <= 49) {
         reg = &WD_DEV_GPIO_GPFSEL4;
-    } else { // I would write safe code, however, in the grand scheme of things a clobber is a clobber
+    } else { // At least we aren't killing anything else
         reg = &WD_DEV_GPIO_GPFSEL5;
     }
 
@@ -44,20 +46,22 @@ void wd_dev_gpio_setpupd(unsigned char pin, enum wd_dev_gpio_pupd mode) {
     *reg ^= 1 << pin;
 }
 
-void wd_dev_gpio_setpupd_multi(const unsigned char pins[], unsigned pinslen, enum wd_dev_gpio_pupd mode) {
+void wd_dev_gpio_setpupd_multi(const unsigned char pins[], size_t pinslen, enum wd_dev_gpio_pupd mode) {
     uint32_t reserved = WD_DEV_GPIO_GPPUD & 0xFFFFFFFC;
     WD_DEV_GPIO_GPPUD = reserved | mode;
     delay_cycles(150);
 
-    uint32_t reg1 = WD_DEV_GPIO_GPPUDCLK0;
-    uint32_t reg2 = WD_DEV_GPIO_GPPUDCLK1;
+    uint32_t reg1 = 0;
+    uint32_t reg2 = 0;
 
     for (unsigned i = 0; i < pinslen; i++) {
         *(pins[i] <= 31 ? &reg1 : &reg2) |= 1 << (pins[i] % 31);
     }
 
-    WD_DEV_GPIO_GPPUDCLK0 = reg1;
-    WD_DEV_GPIO_GPPUDCLK1 = reg2;
+    if (reg1 != 0)
+        WD_DEV_GPIO_GPPUDCLK0 = reg1;
+    if (reg2 != 0)
+        WD_DEV_GPIO_GPPUDCLK1 = reg2;
 
     delay_cycles(150);
 

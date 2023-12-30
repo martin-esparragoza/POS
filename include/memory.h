@@ -29,7 +29,7 @@ void * memcpy(void * dest, void * src, size_t len);
  *
  * @return     Dest
  */
-volatile void * memcpy_vd(volatile void * dest, void * src, unsigned len);
+volatile void * memcpy_vd(volatile void * dest, void * src, size_t len);
 
 /**
  * @brief      Simple memcpy with volatile source
@@ -40,7 +40,7 @@ volatile void * memcpy_vd(volatile void * dest, void * src, unsigned len);
  *
  * @return     dest
  */
-void * memcpy_vs(void * dest, volatile void * src, unsigned len);
+void * memcpy_vs(void * dest, volatile void * src, size_t len);
 
 /**
  * @brief      Simple memcpy with volatile source and destination
@@ -53,7 +53,7 @@ void * memcpy_vs(void * dest, volatile void * src, unsigned len);
  *
  * @return     dest (volatile)
  */
-volatile void * memcpy_vds(volatile void * dest, volatile void * src, unsigned len);
+volatile void * memcpy_vds(volatile void * dest, volatile void * src, size_t len);
 #define memcpy_vsd memcpy_vds
 
 /**

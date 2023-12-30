@@ -45,12 +45,6 @@ __attribute__((target("arm")))
     WD_ASSERT_HARD(errc == WD_DEV_EMMC_ERRC_NONE, {WD_INFO("Error string: %s\n", wd_dev_emmc_errctostr(errc));});
     WD_INFO("Inited EMMC :)");
 
-    while (1) {
-        if (wd_dev_gpio_get(47))
-            WD_INFO("Pluh\n");
-        delay_cycles(15000000);
-    }
-
     wd_panic:
     return 0xDEADBEEF;
 }

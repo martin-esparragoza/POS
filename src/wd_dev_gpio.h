@@ -76,9 +76,18 @@ enum wd_dev_gpio_fun {
  * @brief      Set a specific pin to use an alternate function
  *
  * @param[in]  pin     Pin should be between 0-57
- * @param[in]  opmode  See enum
+ * @param[in]  fun     See enum
  */
 void wd_dev_gpio_setpinfunction(unsigned char pin, enum wd_dev_gpio_fun fun);
+
+/**
+ * @brief      Sets all pins given to use an alternate function
+ *
+ * @param[in]  pins     Pins
+ * @param[in]  pinslen  Number of pins
+ * @param[in]  fun      Function
+ */
+void wd_dev_gpio_setpinfunction_multi(const unsigned char pins[], size_t pinslen, enum wd_dev_gpio_fun fun);
 
 /**
  * @brief      Pull up / pull down
@@ -98,15 +107,6 @@ enum wd_dev_gpio_pupd {
  * @param[in]  mode  See enum
  */
 void wd_dev_gpio_setpupd(unsigned char pin, enum wd_dev_gpio_pupd mode);
-
-/**
- * @brief      Set multiple pins to the same mode
- *
- * @param      pins     All pins to set
- * @param[in]  pinslen  Number of pins given in array
- * @param[in]  mode     Mode
- */
-void wd_dev_gpio_setpupd_multi(const unsigned char pins[], unsigned pinslen, enum wd_dev_gpio_pupd mode);
 
 /**
  * @brief      Clears a pin

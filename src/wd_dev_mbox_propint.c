@@ -44,7 +44,7 @@ inline enum wd_dev_mbox_propint_buffer_code wd_dev_mbox_propint_buffer_getcode(v
 
 volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(volatile struct wd_dev_mbox_propint_buffer * buffer, size_t index) {
     volatile struct wd_dev_mbox_propint_tag * ret = buffer->tags;
-    for (unsigned i = 0; i < index; i++) {
+    for (size_t i = 0; i < index; i++) {
         if (ret->identifier == 0)
             return NULL;
 
