@@ -1,14 +1,15 @@
 #include "wd_dev_emmc.h"
 #include "wd_dev_mbox_propint.h"
 #include "wd_dev_gpio.h"
-    #include "wd_dev_uart1.h"
-    #include "../include/clock.h"
-    #include "wd_debug.h"
+#include <stdint.h>
 
 static const char * errc_to_string[]= {
-    [WD_DEV_EMMC_ERRC_NONE] =  "There was no error",
-    [WD_DEV_EMMC_ERRC_FAIL_CLOCK] = "Failed to set clock for EMMC to 50 or 100 MHz"
+    [WD_DEV_EMMC_ERRC_NONE] =           "There was no error",
+    [WD_DEV_EMMC_ERRC_FAIL_NO_CLOCK] =  "There is no EMMC clock",
+    [WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK] = "Failed to set clock to a rate between 100MHz"
 };
+
+static uint32_t clockrate = 100000000; // Desired, not guaranteed
 
 inline const char * wd_dev_emmc_errctostr(enum wd_dev_emmc_errc errc) {
     return errc_to_string[errc];
@@ -16,31 +17,36 @@ inline const char * wd_dev_emmc_errctostr(enum wd_dev_emmc_errc errc) {
 
 enum wd_dev_emmc_errc wd_dev_emmc_init() {
     // Turn on the EMMC clock
-    volatile struct wd_dev_mbox_propint_buffer * buffer = __builtin_alloca_with_align(64, 128);
-
-    // Progressiveley decrease the MHz so it can be set
+    volatile struct wd_dev_mbox_propint_buffer * buffer = __builtin_alloca_with_align(128, 128);
     wd_dev_mbox_propint_buffer_new(buffer);
-    uint32_t value[] = {1 /* emmc clock */, 1 /* set clock to on */};
-    wd_dev_mbox_propint_buffer_addtag(buffer, 0x00038001 /* set clock state */, value, sizeof(value));
-    wd_dev_mbox_propint_buffer_addendtag(buffer);
 
-    for (unsigned i = 0; i < buffer->size / 4; i++) {
-        wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
-    }
-    wd_dev_uart1_printf("\n");
+    uint32_t valueon[] = {1 /* emmc clock */, 1 /* set clock to on */};
+    wd_dev_mbox_propint_buffer_addtag(buffer, 0x00038001 /* set clock state */, valueon, sizeof(valueon));
+
+    uint32_t valueset[] = {1 /* emmc clock */, clockrate, 0 /* skip setting turbo does not matter */};
+    wd_dev_mbox_propint_buffer_addtag(buffer, 0x00038002 /* set clock rate */, valueset, sizeof(valueset));
+    wd_dev_mbox_propint_buffer_addendtag(buffer);
 
     wd_dev_mbox_propint_buffer_send(buffer);
 
-    for (unsigned i = 0; i < buffer->size / 4; i++) {
-        wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
-    }
-    wd_dev_uart1_printf("\n");
+    volatile struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
 
-    if (wd_dev_mbox_propint_buffer_getcode(buffer) != WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQS ||
-        !wd_dev_mbox_propint_tag_issuccessful(wd_dev_mbox_propint_buffer_gettag(buffer, 0))) {
+    if (wd_dev_mbox_propint_buffer_getcode(buffer) != WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQS || // FIXME: Hopefully not that bad
+        !wd_dev_mbox_propint_tag_issuccessful(tag) ||
+        ((volatile uint32_t *) wd_dev_mbox_propint_tag_getvalue(tag))[1] & 0x02 /* the clock does not exist */) {
 
-        return WD_DEV_EMMC_ERRC_FAIL_CLOCK;
+        return WD_DEV_EMMC_ERRC_FAIL_NO_CLOCK;
     }
+
+    tag = wd_dev_mbox_propint_buffer_gettag(buffer, 1);
+
+    if (!wd_dev_mbox_propint_tag_issuccessful(tag) ||
+        ((volatile uint32_t *) wd_dev_mbox_propint_tag_getvalue(tag))[1] == 0) {
+
+        return WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK;
+    }
+
+    clockrate = ((volatile uint32_t *) tag->value)[1];
 
     // Now set GPIO pins (attrociously slow but whatever)
     wd_dev_gpio_setpinfunction(47, WD_DEV_GPIO_FUN_INPUT); // GPIO_CD
@@ -50,12 +56,9 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     wd_dev_gpio_setpinfunction(51, WD_DEV_GPIO_FUN_ALT3);  // GPIO_DAT1
     wd_dev_gpio_setpinfunction(52, WD_DEV_GPIO_FUN_ALT3);  // GPIO_DAT2
     wd_dev_gpio_setpinfunction(53, WD_DEV_GPIO_FUN_ALT3);  // GPIO_DAT3
-    WD_INFO("Set pin functions!\n");
 
-    WD_INFO("Before PUPD\n");
     unsigned char pins[] = {47, 48, 49, 50, 51, 52};
-    wd_dev_gpio_setpupd_multi(pins, 4, WD_DEV_GPIO_PUPD_UP);
-    WD_INFO("Set pull up / down!\n");
+    wd_dev_gpio_setpupd_multi(pins, sizeof(pins) / sizeof(pins[0]), WD_DEV_GPIO_PUPD_UP);
 
     return WD_DEV_EMMC_ERRC_NONE;
 }

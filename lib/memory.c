@@ -34,6 +34,7 @@ volatile void * memcpy_vds(volatile void * dest, volatile void * src, unsigned l
     return dest;
 }
 
+    #include "../src/wd_debug.h"
 void * memset(void * dest, unsigned char val, size_t len) {
     uint8_t * d = dest;
     while (len--)

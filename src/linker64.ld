@@ -1,6 +1,6 @@
 /* Only difference between linker32 and 64 is the origin (FOR NOW)
 
-ENTRY(_pos_boot_start); /* Covers annoyingness */
+ENTRY(_boot_start); /* Covers annoyingness */
 
 SECTIONS {
     . = 0x80000;

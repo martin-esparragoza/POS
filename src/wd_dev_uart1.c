@@ -14,8 +14,11 @@ bool wd_dev_uart1_init() {
     WD_DEV_UART1_AUX_MU_CNTL_REG = 0; // Disable stuff like auto folow control
     WD_DEV_UART1_AUX_MU_IER_REG = 0; // Disable interrupts
     wd_dev_uart1_enable_sevenbit();
-    wd_dev_uart1_setbaud(115200);
+    if (!wd_dev_uart1_setbaud(115200))
+        return false;
     wd_dev_uart1_enable_transmitter();
+
+    return true;
 }
 
 void wd_dev_uart1_init_gpio() {

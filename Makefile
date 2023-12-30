@@ -4,7 +4,7 @@ CFLAGS = -fPIC -ffreestanding -std=gnu99 -Wall -O0 -Wextra -std=c99
 CLINK =
 ASMFLAGS =
 ASMLINK =
-LINKFLAGS = -ffreestanding -O0 -nostdlib
+LINKFLAGS = -ffreestanding -O0 -nostdlib -fPIC
 LINKLINK = -lgcc
 BIT = 32
 STD = libstd.a # Hilariously jank but whatever

@@ -12,14 +12,14 @@
 .extern wd_main
 
 .section .text
-    .global _pos_boot_start
-    _pos_boot_start:
+    .global _boot_start
+    _boot_start:
         // Stop all coprocessors (haven't dealth with coprocessors yet so this code is shamefully stolen)
         mrc p15, 0, r5, c0, c0, 5
         and r5, r5, 3
         cmp r5, 0
         ldrne r0, =0xDEADBEEF
-        bne pos_boot_halt // TODO: process error so we dont die
+        bne boot_halt // TODO: process error so we dont die
         
         ldr sp, =__start
         
@@ -34,7 +34,7 @@
             cmp r1, r2
             pophs {r0-r2}
             // Ticking time bomb :) (maybe)
-            movhs lr, pos_boot_halt
+            movhs lr, boot_halt
             bhs wd_main
             
             strb r0, [r1], 1
@@ -42,10 +42,10 @@
         
         // Return for error code :(
     
-    pos_boot_halt:
+    boot_halt:
         // On halt r0 should be equal to 0xDEADBEEF
         wfe
-        b pos_boot_halt
+        b boot_halt
 
 .section .data
     .ascii "wd SIG 32 BIT CODE"

@@ -10,8 +10,8 @@
 .extern wd_main
 
 .section .text
-    .global _pos_boot_start
-    _pos_boot_start:
+    .global _boot_start
+    _boot_start:
         // All processors are already halted for us on power up
         
         ldr x5, =__start
@@ -35,15 +35,15 @@
             ldr x2, [sp], 16
             ldr x1, [sp], 16
             ldr x0, [sp], 16
-            mov lr, pos_boot_halt
+            mov lr, boot_halt
             b wd_main
         
         // Return for error code :(
     
-    pos_boot_halt:
+    boot_halt:
         // On halt r0 should be equal to 0xDEADBEEF
         wfe
-        b pos_boot_halt
+        b boot_halt
 
 .section .data
     .ascii "wd SIG 64 BIT CODE"

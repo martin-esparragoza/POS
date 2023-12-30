@@ -52,7 +52,8 @@
 
 enum wd_dev_emmc_errc {
     WD_DEV_EMMC_ERRC_NONE,
-    WD_DEV_EMMC_ERRC_FAIL_CLOCK
+    WD_DEV_EMMC_ERRC_FAIL_NO_CLOCK,
+    WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK
 };
 
 /**

@@ -1,4 +1,4 @@
-ENTRY(_pos_boot_start); /* Covers annoyingness */
+ENTRY(_boot_start); /* Covers annoyingness */
 
 SECTIONS {
     . = 0x8000;

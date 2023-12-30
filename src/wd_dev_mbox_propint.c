@@ -22,7 +22,7 @@ volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_addtag(vola
 
     // Align to 32 bits
     unsigned aligned = (buffer->size + 3) & ~3;
-    memset(((void *) buffer) + buffer->size, 0, aligned);
+    memset(((void *) buffer) + buffer->size, 0, aligned); // Discards volatile, does not matter because no reads occour
 
     buffer->size = aligned;
 
@@ -48,7 +48,8 @@ volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(vola
         if (ret->identifier == 0)
             return NULL;
 
-        ret += ret->valuesize + sizeof(struct wd_dev_mbox_propint_tag *);
+        ret++;
+        ret = ((void *) ret) + ret->valuesize;
     }
 
     return ret;

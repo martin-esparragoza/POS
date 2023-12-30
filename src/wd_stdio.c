@@ -58,8 +58,8 @@ static inline void print_bin(void (* const write_char)(char), intmax_t val) {
 
 static char hexmap[] = "0123456789ABCDEF";
 
-static void print_hex(void (*const write_char)(char), uintmax_t val);
-static inline void print_hex(void (*const write_char)(char), uintmax_t val) {
+static void print_hex(void (* const write_char)(char), uintmax_t val);
+static inline void print_hex(void (* const write_char)(char), uintmax_t val) {
     uintmax_t mask = 0x0F;
     signed char offset = 0;
 #if BIT == 32
@@ -87,6 +87,12 @@ static inline void print_hex(void (*const write_char)(char), uintmax_t val) {
     }
 }
 
+static inline void print_string(void (* const write_char)(char), const char * val) {
+    for (unsigned i = 0; val[i] != '\0'; i++) {
+        (*write_char)(val[i]);
+    }
+}
+
 void wd_fprintf(void (* const write_char)(char), const char * format, ...) {
     va_list args;
     va_start(args, format);
@@ -103,6 +109,9 @@ void wd_fprintf(void (* const write_char)(char), const char * format, ...) {
                     break;
                 case 'x':
                     print_hex(write_char, va_arg(args, uintmax_t));
+                    break;
+                case 's':
+                    print_string(write_char, va_arg(args, const char *));
             }
             continue;
         }
