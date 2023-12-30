@@ -24,16 +24,20 @@ extern void wd_panic;
 
 #define WD_INFO(format, ...)  __UART1_DEBUG_PRINTF("[WD\tINFO\t%s:%d] " format, __FILE__, __LINE__, ##__VA_ARGS__)
 #define WD_WARN(format, ...)  __UART1_DEBUG_PRINTF("[WD\tWARN\t%s:%d] " format, __FILE__, __LINE__, ##__VA_ARGS__)
-#define WD_ERROR(format, ...) __UART1_DEBUG_PRINTF("[WD\tERROR\t%s:%d] " format, __FILE__, __LINE__, ##__VA_ARGS__); goto wd_panic
+#define WD_ERROR_SOFT(format, ...) __UART1_DEBUG_PRINTF("[WD\tERROR\t%s:%d] " format, __FILE__, __LINE__, ##__VA_ARGS__);
+#define WD_ERROR(format, ...) WD_ERROR_SOFT(format, ##__VA_ARGS__); goto wd_panic
 
-#define WD_ASSERT_SOFT(condition) \
+#define WD_ASSERT_SOFT(condition, then) \
     if (!(condition)) { \
-        WD_ERROR("Soft assertion %s failed\n", __FILE__, __LINE__, #condition); \
+        WD_ERROR_SOFT("Soft assertion %s failed\n", __FILE__, __LINE__, #condition); \
+        then; \
     }
 
 
-#define WD_ASSERT_HARD(condition) \
+#define WD_ASSERT_HARD(condition, then) \
     if (!(condition)) { \
-        WD_ERROR("Hard assertion %s failed\n", __FILE__, __LINE__, #condition); \
+        WD_ERROR_SOFT("Hard assertion %s failed\n", __FILE__, __LINE__, #condition); \
+        then; \
+        goto wd_panic; \
     }
 

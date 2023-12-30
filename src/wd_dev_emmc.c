@@ -1,12 +1,13 @@
 #include "wd_dev_emmc.h"
 #include "wd_dev_mbox_propint.h"
 #include "wd_dev_gpio.h"
+    #include "wd_dev_uart1.h"
 #include <stdint.h>
 
 static const char * errc_to_string[]= {
     [WD_DEV_EMMC_ERRC_NONE] =           "There was no error",
     [WD_DEV_EMMC_ERRC_FAIL_NO_CLOCK] =  "There is no EMMC clock",
-    [WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK] = "Failed to set clock to a rate between 100MHz"
+    [WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK] = "Failed to set clock to a rate of 100MHz"
 };
 
 static uint32_t clockrate = 100000000; // Desired, not guaranteed
@@ -27,7 +28,19 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     wd_dev_mbox_propint_buffer_addtag(buffer, 0x00038002 /* set clock rate */, valueset, sizeof(valueset));
     wd_dev_mbox_propint_buffer_addendtag(buffer);
 
+    for (unsigned i = 0; i < 16; i++) {
+        wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
+    }
+    wd_dev_uart1_printf("\n");
+
+
     wd_dev_mbox_propint_buffer_send(buffer);
+
+    for (unsigned i = 0; i < 16; i++) {
+        wd_dev_uart1_printf("0x%x ", ((volatile uint32_t *) buffer)[i]);
+    }
+    wd_dev_uart1_printf("\n");
+
 
     volatile struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
 
@@ -40,13 +53,14 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
 
     tag = wd_dev_mbox_propint_buffer_gettag(buffer, 1);
 
+    clockrate = ((volatile uint32_t *) wd_dev_mbox_propint_tag_getvalue(tag))[1];
+
     if (!wd_dev_mbox_propint_tag_issuccessful(tag) ||
-        ((volatile uint32_t *) wd_dev_mbox_propint_tag_getvalue(tag))[1] == 0) {
+        clockrate == 0) {
 
         return WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK;
     }
 
-    clockrate = ((volatile uint32_t *) tag->value)[1];
 
     // Now set GPIO pins (attrociously slow but whatever)
     wd_dev_gpio_setpinfunction(47, WD_DEV_GPIO_FUN_INPUT); // GPIO_CD

@@ -13,8 +13,8 @@ STD = libstd.a # Hilariously jank but whatever
 PIV = PI3B
 
 ifeq ($(PIV),PI2)
-	CC = arm-none-eabi-as
-	ASM = arm-none-eabi-gcc
+	CC = arm-none-eabi-gcc
+	ASM = arm-none-eabi-as
 	LINK = arm-none-eabi-gcc
 	AR = arm-none-eabi-ar
 	OBJCOPY = arm-none-eabi-objcopy

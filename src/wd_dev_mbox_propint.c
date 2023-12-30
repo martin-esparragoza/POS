@@ -48,8 +48,7 @@ volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(vola
         if (ret->identifier == 0)
             return NULL;
 
-        ret++;
-        ret = ((void *) ret) + ret->valuesize;
+        ret = ((void *) ret) + ret->valuesize + sizeof(struct wd_dev_mbox_propint_tag);
     }
 
     return ret;
@@ -57,7 +56,7 @@ volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(vola
 
 void wd_dev_mbox_propint_buffer_send(volatile struct wd_dev_mbox_propint_buffer * buffer) {
     wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) buffer) & ~0x0F) >> 4);
-    while ((WD_DEV_MBOX_STATUS & 0x40000000) != 0) {;}
+    wd_dev_mbox_read(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC);
 }
 
 inline uint32_t wd_dev_mbox_propint_tag_getidentifier(volatile struct wd_dev_mbox_propint_tag * tag) {

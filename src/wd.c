@@ -41,7 +41,8 @@ __attribute__((target("arm")))
     wd_dev_uart1_init();
 #endif
 
-    WD_ASSERT_HARD(wd_dev_emmc_init() == WD_DEV_EMMC_ERRC_NONE);
+    enum wd_dev_emmc_errc errc = wd_dev_emmc_init();
+    WD_ASSERT_HARD(errc == WD_DEV_EMMC_ERRC_NONE, {WD_INFO("Error string: %s\n", wd_dev_emmc_errctostr(errc));});
     WD_INFO("Inited EMMC :)");
 
     while (1) {
@@ -51,6 +52,5 @@ __attribute__((target("arm")))
     }
 
     wd_panic:
-    WD_INFO("PLUH\n");
     return 0xDEADBEEF;
 }
