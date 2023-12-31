@@ -1,12 +1,15 @@
 #include "wd_dev_emmc.h"
 #include "wd_dev_mbox_propint.h"
 #include "wd_dev_gpio.h"
+#include "wd_dev_timer.h"
 #include <stdint.h>
 
 static const char * errc_to_string[]= {
     [WD_DEV_EMMC_ERRC_NONE] =           "There was no error",
     [WD_DEV_EMMC_ERRC_FAIL_NO_CLOCK] =  "There is no EMMC clock",
-    [WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK] = "Failed to set clock to a rate of 100MHz"
+    [WD_DEV_EMMC_ERRC_FAIL_SET_CLOCK] = "Failed to set clock to a rate of 100MHz",
+    [WD_DEV_EMMC_ERRC_FAIL_MBOX] =      "Failed to send mailbox message in time",
+    [WD_DEV_EMMC_ERRC_FAIL_RESTART] =   "Failed to restart EMMC in given time"
 };
 
 static uint32_t clockrate = 100000000; // Desired, not guaranteed
@@ -27,7 +30,8 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
     wd_dev_mbox_propint_buffer_addtag(buffer, 0x00038002 /* set clock rate */, valueset, sizeof(valueset));
     wd_dev_mbox_propint_buffer_addendtag(buffer);
 
-    wd_dev_mbox_propint_buffer_send(buffer);
+    if (!wd_dev_mbox_propint_buffer_send(buffer, 10000))
+        return WD_DEV_EMMC_ERRC_FAIL_MBOX;
 
     volatile struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
 
@@ -56,6 +60,11 @@ enum wd_dev_emmc_errc wd_dev_emmc_init() {
 
     unsigned char pins[] = {47, 48, 49, 50, 51, 52};
     wd_dev_gpio_setpupd_multi(pins, sizeof(pins) / sizeof(pins[0]), WD_DEV_GPIO_PUPD_UP);
+
+    // Now we need to reset EMMC
+    WD_DEV_EMMC_CONTROL0 = 0;
+    WD_DEV_EMMC_CONTROL1 |= 0x01000000; // Reset everything (HC)
+    WD_DEV_TIMER_WAITUNTILCONDITION(WD_DEV_EMMC_CONTROL1 & 0x01000000, {return WD_DEV_EMMC_ERRC_FAIL_RESTART;}, 10000);
 
     return WD_DEV_EMMC_ERRC_NONE;
 }

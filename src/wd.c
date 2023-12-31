@@ -38,18 +38,16 @@ __attribute__((target("arm")))
 #endif
 
 #ifdef UART1_DEBUG
-    wd_dev_uart1_init();
+    WD_ASSERT_SOFT(wd_dev_uart1_init(), {});
 #endif
 
-    uint64_t time = wd_dev_timer_currenttimeus();
-    WD_INFO("Init took %d microseconds\n", time);
+    WD_INFO("UART Init took %d microseconds\n", wd_dev_timer_currenttimeus());
 
     enum wd_dev_emmc_errc errc = wd_dev_emmc_init();
     WD_ASSERT_HARD(errc == WD_DEV_EMMC_ERRC_NONE, {WD_INFO("Error string: %s\n", wd_dev_emmc_errctostr(errc));});
     WD_INFO("Inited EMMC :)\n");
 
-    time = wd_dev_timer_currenttimeus();
-    WD_INFO("Total bootloader time: %d microseconds\n", time);
+    WD_INFO("Total bootloader time: %d microseconds\n", wd_dev_timer_currenttimeus());
 
     wd_panic:
     return 0xDEADBEEF;

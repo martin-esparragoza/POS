@@ -18,6 +18,7 @@
 
 #pragma once
 #include <stdint.h>
+#include <stdbool.h>
 
 #define WD_DEV_MBOX_BASE   0x3F00B880
 #define WD_DEV_MBOX_READ   (*((volatile uint32_t *) (WD_DEV_MBOX_BASE + 0x00)))
@@ -40,20 +41,25 @@ enum wd_dev_mbox_channel {
  * @brief      Read from mbox channel
  *
  * @param[in]  channel  Channel
+ * @param[in]  ms       Max # of ms that call can use
  *
- * @return     Read value
+ * @return     -1 if took too long to write
  * 
- * Discards messages not meant for it
+ * Discards messages not meant for it <br>
+ * Because return values can only be 24 bits, bit 25 set in the return means that timeout was reached
  */
-uint32_t wd_dev_mbox_read(enum wd_dev_mbox_channel channel);
+int32_t wd_dev_mbox_read(enum wd_dev_mbox_channel channel, uint64_t ms);
 
 /**
  * @brief      Write to mbox channel
  *
  * @param[in]  channel  Channel
  * @param[in]  data     Data to write
+ * @param[in]  ms       Max # of ms that call can use
+ * 
+ * @return     False if took too long to write
  */
-void wd_dev_mbox_write(enum wd_dev_mbox_channel channel, uint32_t data);
+bool wd_dev_mbox_write(enum wd_dev_mbox_channel channel, uint32_t data, uint64_t ms);
 
 /**
  * @}

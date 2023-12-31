@@ -50,6 +50,22 @@ void wd_dev_timer_waitus(uint64_t us);
 void wd_dev_timer_waitms(uint64_t ms);
 
 /**
+ * @brief      Wait until condition true (run then if too much time was used)
+ *
+ * @param      condition  Condition to wait for true
+ * @param      then       What is ran after
+ * @param      ms         Max # milis
+ */
+#define WD_DEV_TIMER_WAITUNTILCONDITION(condition, then, ms) \
+    uint64_t _ms = wd_dev_timer_currenttimeus(); \
+    while (!(condition)) { \
+        if (wd_dev_timer_currenttimeus() - _ms >= ms * 1000) { \
+            then; \
+            break; \
+        } \
+    }
+
+/**
  * @}
  * @}
  * @}

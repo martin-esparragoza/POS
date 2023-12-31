@@ -2,6 +2,7 @@
 #include "wd_dev.h"
 #include "wd_dev_gpio.h"
 #include "wd_dev_mbox_propint.h"
+#include "wd_dev_timer.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -40,7 +41,9 @@ bool wd_dev_uart1_setbaud(unsigned baud) {
     uint32_t value[] = {4 /* clock id of core */, 0 /* placeholder for returned rate */};
     wd_dev_mbox_propint_buffer_addtag(buffer, 0x00030002 /* get clock rate */, value, sizeof(value));
     wd_dev_mbox_propint_buffer_addendtag(buffer);
-    wd_dev_mbox_propint_buffer_send(buffer);
+
+    if (!wd_dev_mbox_propint_buffer_send(buffer, 10000))
+        return false;
 
     volatile struct wd_dev_mbox_propint_tag * tag = wd_dev_mbox_propint_buffer_gettag(buffer, 0);
     if (wd_dev_mbox_propint_buffer_getcode(buffer) != WD_DEV_MBOX_PROPINT_BUFFER_CODE_REQS ||
@@ -57,12 +60,13 @@ bool wd_dev_uart1_setbaud(unsigned baud) {
     return true;
 }
 
-void __attribute__((noinline)) wd_dev_uart1_write_char(char data) {
+void wd_dev_uart1_write_char(char data) {
     if (data == '\0') // UART1 can't send a 0 bc no parity
         return;
 
     // Wait until we can send
-    while ((WD_DEV_UART1_AUX_MU_LSR_REG & 0x20) == 0) {;}
+    // No errc because its really not the end of the world if this fails
+    WD_DEV_TIMER_WAITUNTILCONDITION((WD_DEV_UART1_AUX_MU_LSR_REG & 0x20), {return;}, 500);
     WD_DEV_UART1_AUX_MU_IO_REG = data;
 }
 

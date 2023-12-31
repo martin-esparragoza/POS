@@ -118,8 +118,9 @@ volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(vola
  * @brief      Sends buffer to mailbox
  *
  * @param[in]  buffer  Buffer
+ * @param[in]  ms      # of Milliseconds allowed for each read/write call (meaning that in total max is 2 * ms)
  */
-void wd_dev_mbox_propint_buffer_send(volatile struct wd_dev_mbox_propint_buffer * buffer);
+bool wd_dev_mbox_propint_buffer_send(volatile struct wd_dev_mbox_propint_buffer * buffer, uint64_t ms);
 
 /**
  * @brief      Get identifier of tag

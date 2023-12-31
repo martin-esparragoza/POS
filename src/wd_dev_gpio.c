@@ -58,9 +58,9 @@ void wd_dev_gpio_setpupd_multi(const unsigned char pins[], size_t pinslen, enum 
         *(pins[i] <= 31 ? &reg1 : &reg2) |= 1 << (pins[i] % 31);
     }
 
-    if (reg1 != 0)
+    if (reg1)
         WD_DEV_GPIO_GPPUDCLK0 = reg1;
-    if (reg2 != 0)
+    if (reg2)
         WD_DEV_GPIO_GPPUDCLK1 = reg2;
 
     delay_cycles(150);

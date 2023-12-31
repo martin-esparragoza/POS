@@ -82,7 +82,9 @@ bool wd_dev_uart1_setbaud(unsigned baud);
 
 /**
  * @brief      Write a single character to the FIFO
- *
+ * 
+ * Aborts if takes over 500ms
+ * 
  * @param[in]  data  Character
  */
 void wd_dev_uart1_write_char(char data);

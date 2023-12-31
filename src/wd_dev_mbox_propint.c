@@ -54,9 +54,13 @@ volatile struct wd_dev_mbox_propint_tag * wd_dev_mbox_propint_buffer_gettag(vola
     return ret;
 }
 
-void wd_dev_mbox_propint_buffer_send(volatile struct wd_dev_mbox_propint_buffer * buffer) {
-    wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) buffer) & ~0x0F) >> 4);
-    wd_dev_mbox_read(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC);
+bool wd_dev_mbox_propint_buffer_send(volatile struct wd_dev_mbox_propint_buffer * buffer, uint64_t ms) {
+    bool ret = true;
+
+    ret &= wd_dev_mbox_write(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, (((long) buffer) & ~0x0F) >> 4, ms);
+    ret &= wd_dev_mbox_read(WD_DEV_MBOX_CHANNEL_PROPERTY_ARMTOVC, ms) != -1;
+
+    return ret;
 }
 
 inline uint32_t wd_dev_mbox_propint_tag_getidentifier(volatile struct wd_dev_mbox_propint_tag * tag) {
@@ -72,7 +76,7 @@ inline uint32_t wd_dev_mbox_propint_buffer_getreturnvaluesize(volatile struct wd
 }
 
 bool wd_dev_mbox_propint_tag_issuccessful(volatile struct wd_dev_mbox_propint_tag * tag) {
-    return (tag->code & (1 << 31)) > 0;
+    return tag->code & (1 << 31);
 }
 
 inline volatile void * wd_dev_mbox_propint_tag_getvalue(volatile struct wd_dev_mbox_propint_tag * tag) {
