@@ -1,5 +1,7 @@
 /**
  * @file
+ * 
+ * @brief      Property interface handler
  *
  * @addtogroup WD
  * @{
@@ -11,11 +13,8 @@
  * @{
  * 
  * @defgroup   PROPINT
- * Property inferfacee
+ * Property inferface
  * @{
- *
- * @brief      Property interface handler
- *
  */
 
 #pragma once

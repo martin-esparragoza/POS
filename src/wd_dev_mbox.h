@@ -1,6 +1,8 @@
 /**
  * @file
  * 
+ * @brief      Mailbox drivers for wardpdrive
+ * 
  * @addtogroup WD
  * @{
  * 
@@ -10,8 +12,6 @@
  * @defgroup   MBOX
  * Mailbox
  * @{
- *
- * @brief      Mailbox drivers for wardpdrive
  * 
  * Supports the first mailbox
  */

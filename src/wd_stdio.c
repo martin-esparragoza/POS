@@ -1,3 +1,5 @@
+// This file is done REALY bad.. sorry
+
 #include "wd_stdio.h"
 #include <stdarg.h>
 #include <stdbool.h>
@@ -112,6 +114,7 @@ void wd_fprintf(void (* const write_char)(char), const char * format, ...) {
                     break;
                 case 's':
                     print_string(write_char, va_arg(args, const char *));
+                    break;
             }
             continue;
         }

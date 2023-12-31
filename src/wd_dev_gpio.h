@@ -103,7 +103,7 @@ void wd_dev_gpio_setpupd(unsigned char pin, enum wd_dev_gpio_pupd mode);
 /**
  * @brief      Set multiple pins to the same mode
  *
- * @param      pins     All pins to set
+ * @param[in]  pins     All pins to set
  * @param[in]  pinslen  Number of pins given in array
  * @param[in]  mode     Mode
  */

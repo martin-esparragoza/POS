@@ -19,7 +19,11 @@
 /**
  * @brief      Fprintf
  * 
- * Supports %d for now
+ * Supports:
+ *  %d - Signed uintmax_t
+ *  %b - Binary uintmax_t
+ *  %x - Hex uintmax_t
+ *  %s - String
  *
  * @param[in]  write_char  Character print function
  * @param[in]  format      Fstring
@@ -29,5 +33,5 @@ void wd_fprintf(void (* const write_char)(char), const char * format, ...);
 
 /**
  * @}
- * @]
+ * @}
  */

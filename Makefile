@@ -19,8 +19,7 @@ ifeq ($(PIV),PI2)
 	AR = arm-none-eabi-ar
 	OBJCOPY = arm-none-eabi-objcopy
 	CFLAGS += -mcpu=cortex-a7 -mabi=aapcs
-	ASMFLAGS += -mcpu=cortex-a7
-	ASMFLAGS += -Wall
+	ASMFLAGS += -mcpu=cortex-a7 -Wall
 else ifeq ($(PIV),$(filter $(PIV), PI2R PI3AP PI3B))
 	CFLAGS += -mcpu=cortex-a53
 	ASMFLAGS += -mcpu=cortex-a53

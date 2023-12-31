@@ -1,7 +1,6 @@
 #include "wd_dev_emmc.h"
 #include "wd_dev_mbox_propint.h"
 #include "wd_dev_gpio.h"
-    #include "wd_dev_uart1.h"
 #include <stdint.h>
 
 static const char * errc_to_string[]= {

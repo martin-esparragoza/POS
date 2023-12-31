@@ -27,3 +27,8 @@ POS is a minimal operating system that is meant to satisfy the needs to hobbyist
 # Driver Standards
 * Registers are to be #defined as the VALUE of a volatile pointer
 * Bufferes + others are meant to be structures
+
+# To Refactor
+* GPIO
+* Just look over UART1 for shenanigans
+* STDIO

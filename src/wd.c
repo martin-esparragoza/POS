@@ -10,7 +10,7 @@
 #include "wd_dev_emmc.h"
     #include "wd_dev_gpio.h"
     #include "../include/clock.h"
-#include <stdint.h>
+#include "wd_dev_timer.h"
 #include <stdint.h>
 
 static uintmax_t wd_machine_id;
@@ -41,9 +41,15 @@ __attribute__((target("arm")))
     wd_dev_uart1_init();
 #endif
 
+    uint64_t time = wd_dev_timer_currenttimeus();
+    WD_INFO("Init took %d microseconds\n", time);
+
     enum wd_dev_emmc_errc errc = wd_dev_emmc_init();
     WD_ASSERT_HARD(errc == WD_DEV_EMMC_ERRC_NONE, {WD_INFO("Error string: %s\n", wd_dev_emmc_errctostr(errc));});
-    WD_INFO("Inited EMMC :)");
+    WD_INFO("Inited EMMC :)\n");
+
+    time = wd_dev_timer_currenttimeus();
+    WD_INFO("Total bootloader time: %d microseconds\n", time);
 
     wd_panic:
     return 0xDEADBEEF;

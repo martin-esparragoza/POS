@@ -1,6 +1,8 @@
 /**
  * @file
  * 
+ * @brief      SD handle
+ * 
  * @addtogroup WD
  * @{
  * 
@@ -10,8 +12,6 @@
  * @defgroup   EMMC
  * Extended multimedia controller driver
  * @{
- * 
- * @brief      SD handle
  * 
  * This driver has been implemented through someone elses code as documentation (BECAUSE SOME PEOPLE CAN'T RELEASE GIVEN DOCUMENTATION) <br>
  * Thank you Zoltan Baldaszti :) <br>

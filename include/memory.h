@@ -4,6 +4,9 @@
  * @brief      Useful memory operations
  * 
  * <b>Freestanding file</b>
+ * 
+ * @addtogroup WD
+ * @{
  */
 
 #pragma once
