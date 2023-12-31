@@ -36,6 +36,20 @@
 uint64_t wd_dev_timer_currenttimeus();
 
 /**
+ * @brief      Uses system clock to wait for a number of microseconds
+ *
+ * @param[in]  us    Num microseconds
+ */
+void wd_dev_timer_waitus(uint64_t us);
+
+/**
+ * @brief      Uses system clock to wait for a number of miliseconds
+ *
+ * @param[in]  ms    Num miliseconds
+ */
+void wd_dev_timer_waitms(uint64_t ms);
+
+/**
  * @}
  * @}
  * @}
