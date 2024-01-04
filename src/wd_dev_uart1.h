@@ -27,17 +27,112 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define WD_DEV_UART1_AUX_MU_IO_REG   (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x40)))
-#define WD_DEV_UART1_AUX_MU_IER_REG  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x44)))
-#define WD_DEV_UART1_AUX_MU_IIR_REG  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x48)))
-#define WD_DEV_UART1_AUX_MU_LCR_REG  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x4C)))
-#define WD_DEV_UART1_AUX_MU_MCR_REG  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x50)))
-#define WD_DEV_UART1_AUX_MU_LSR_REG  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x54)))
-#define WD_DEV_UART1_AUX_MU_MSR_REG  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x58)))
-#define WD_DEV_UART1_AUX_MU_SCRATCH  (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x5C)))
-#define WD_DEV_UART1_AUX_MU_CNTL_REG (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x60)))
-#define WD_DEV_UART1_AUX_MU_STAT_REG (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x64)))
-#define WD_DEV_UART1_AUX_MU_BAUD_REG (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x68)))
+#define WD_DEV_UART1_IO               (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x40)))
+#define WD_DEV_UART1_IO_LS8BAUD       0xFF
+#define WD_DEV_UART1_IO_LS8BAUD_S     0
+#define WD_DEV_UART1_IO_TRANS         0xFF
+#define WD_DEV_UART1_IO_TRANS_S       0
+#define WD_DEV_UART1_IO_RCV           0xFF
+#define WD_DEV_UART1_IO_RCV_S         0
+#define WD_DEV_UART1_IO_MSK           0xFF
+
+#define WD_DEV_UART1_IIR              (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x44)))
+#define WD_DEV_UART1_IIR_MS8BAUD      0xFF
+#define WD_DEV_UART1_IIR_MS8BAUD_S    0
+#define WD_DEV_UART1_IIR_ERI          0x02
+#define WD_DEV_UART1_IIR_ERI_S        1
+#define WD_DEV_UART1_IIR_ETI          0x01
+#define WD_DEV_UART1_IIR_ETI_S        0
+#define WD_DEV_UART1_IIR_MSK          0xFF
+
+#define WD_DEV_UART1_IER              (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x48)))
+#define WD_DEV_UART1_IER_FIFOEN       0xC0
+#define WD_DEV_UART1_IER_FIFOEN_S     6
+#define WD_DEV_UART1_IER_IIDCLR       0x06
+#define WD_DEV_UART1_IER_IIDCLR_S     1
+#define WD_DEV_UART1_IER_IP           0x01
+#define WD_DEV_UART1_IER_IP_S         0
+#define WD_DEV_UART1_IER_MSK          0xC7
+
+#define WD_DEV_UART1_LCR              (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x4C)))
+#define WD_DEV_UART1_LCR_DLABA        0x80
+#define WD_DEV_UART1_LCR_DLABA_S      7
+#define WD_DEV_UART1_LCR_BRK          0x04
+#define WD_DEV_UART1_LCR_BRK_S        2
+#define WD_DEV_UART1_LCR_DATSZ        0x01
+#define WD_DEV_UART1_LCR_DATSZ_S      0
+#define WD_DEV_UART1_LCR_MSK          0x85
+
+#define WD_DEV_UART1_MCR              (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x50)))
+#define WD_DEV_UART1_MCR_RTS          0x02
+#define WD_DEV_UART1_MCR_RTS_S        1
+#define WD_DEV_UART1_MCR_MSK          0x02
+
+#define WD_DEV_UART1_LSR              (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x54)))
+#define WD_DEV_UART1_LSR_TRANSIDLE    0x40
+#define WD_DEV_UART1_LSR_TRANSIDLE_S  6
+#define WD_DEV_UART1_LSR_TRANSEP      0x20
+#define WD_DEV_UART1_LSR_TRANSEP_S    5
+#define WD_DEV_UART1_LSR_RCVOVER      0x02
+#define WD_DEV_UART1_LSR_RCVOVER_S    1
+#define WD_DEV_UART1_LSR_DATAREADY    0x01
+#define WD_DEV_UART1_LSR_DATAREADY_S  0
+#define WD_DEV_UART1_LSR_MSK          0x63
+
+#define WD_DEV_UART1_MSR              (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x58)))
+#define WD_DEV_UART1_MSR_CTSINV       0x10
+#define WD_DEV_UART1_MSR_CTSINV_s     4
+#define WD_DEV_UART1_MSR_MSK          0x10
+
+#define WD_DEV_UART1_SCRATCH          (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x5C)))
+#define WD_DEV_UART1_SCRATCH_MSK      0xFF
+
+#define WD_DEV_UART1_CNTL             (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x60)))
+#define WD_DEV_UART1_CNTL_CTSASS      0x80
+#define WD_DEV_UART1_CNTL_CTSASS_S    7
+#define WD_DEV_UART1_CNTL_RTSASS      0x40
+#define WD_DEV_UART1_CNTL_RTSASS_S    6
+#define WD_DEV_UART1_CNTL_RTSAUTO     0x30
+#define WD_DEV_UART1_CNTL_RTSAUTO_S   4
+#define WD_DEV_UART1_CNTL_CTSAUTO     0x08
+#define WD_DEV_UART1_CNTL_CTSAUTO_S   3
+#define WD_DEV_UART1_CNTL_AUTORTSC    0x04
+#define WD_DEV_UART1_CNTL_AUTORTSC_S  2
+#define WD_DEV_UART1_CNTL_TRANSE      0x02
+#define WD_DEV_UART1_CNTL_TRANSE_S    1
+#define WD_DEV_UART1_CNTL_RCVE        0x01
+#define WD_DEV_UART1_CNTL_RCVE_S      0
+#define WD_DEV_UART1_CNTL_MSK         0xFF
+
+#define WD_DEV_UART1_STAT             (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x64)))
+#define WD_DEV_UART1_STAT_TFIFOLEN    0x0F0000000
+#define WD_DEV_UART1_STAT_TFIFOLEN_S  24
+#define WD_DEV_UART1_STAT_RFIFOLEN    0x000F0000
+#define WD_DEV_UART1_STAT_RFIFOLEN_S  16
+#define WD_DEV_UART1_STAT_TRANSDONE   0x00000200
+#define WD_DEV_UART1_STAT_TRANSDONE_S 9
+#define WD_DEV_UART1_STAT_TFIFOEMP    0x00000100
+#define WD_DEV_UART1_STAT_TFIFOEMP_S  8
+#define WD_DEV_UART1_STAT_CTS         0x00000080
+#define WD_DEV_UART1_STAT_CTS_S       7
+#define WD_DEV_UART1_STAT_RTS         0x00000040
+#define WD_DEV_UART1_STAT_RTS_S       6
+#define WD_DEV_UART1_STAT_TFIFOFULL   0x00000020
+#define WD_DEV_UART1_STAT_TFIFOFULL_S 5
+#define WD_DEV_UART1_STAT_RCVOVER     0x00000010
+#define WD_DEV_UART1_STAT_RCVOVER_S   4
+#define WD_DEV_UART1_STAT_TRANSIDLE   0x00000008
+#define WD_DEV_UART1_STAT_TRANSIDLE_S 3
+#define WD_DEV_UART1_STAT_RCVIDLE     0x00000004
+#define WD_DEV_UART1_STAT_RCVIDLE_S   2
+#define WD_DEV_UART1_STAT_SPCAV       0x00000002
+#define WD_DEV_UART1_STAT_SPCAV_S     1
+#define WD_DEV_UART1_STAT_SYMAV       0x00000001
+#define WD_DEV_UART1_STAT_SYMAV_S     0
+#define WD_DEV_UART1_STAT_MSK         0xF0F03FF
+
+#define WD_DEV_UART1_BAUD             (*((volatile uint32_t *) (WD_DEV_GEN_AUX_BASE + 0x68)))
+#define WD_DEV_UART1_BAUD_MSK         0x0000FFFF
 
 /**
  * @brief      Init the UART1 internally

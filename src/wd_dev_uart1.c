@@ -12,8 +12,8 @@
 bool wd_dev_uart1_init() {
     // Initialize the UART1 (mini uart)
     wd_dev_uart1_enable();
-    WD_DEV_UART1_AUX_MU_CNTL_REG = 0; // Disable stuff like auto folow control
-    WD_DEV_UART1_AUX_MU_IER_REG = 0; // Disable interrupts
+    WD_DEV_UART1_CNTL = 0; // Disable stuff like auto folow control
+    WD_DEV_UART1_IIR = 0; // Disable interrupts
     wd_dev_uart1_enable_sevenbit();
     if (!wd_dev_uart1_setbaud(115200))
         return false;
@@ -56,7 +56,7 @@ bool wd_dev_uart1_setbaud(unsigned baud) {
         return false;
     }
 
-    WD_DEV_UART1_AUX_MU_BAUD_REG = reg;
+    WD_DEV_UART1_BAUD = reg;
     return true;
 }
 
@@ -66,8 +66,8 @@ void wd_dev_uart1_write_char(char data) {
 
     // Wait until we can send
     // No errc because its really not the end of the world if this fails
-    WD_DEV_TIMER_WAITUNTILCONDITION((WD_DEV_UART1_AUX_MU_LSR_REG & 0x20), {return;}, 500);
-    WD_DEV_UART1_AUX_MU_IO_REG = data;
+    WD_DEV_TIMER_WAITUNTILCONDITION((WD_DEV_UART1_LSR & WD_DEV_UART1_LSR_TRANSEP), {return;}, 500);
+    WD_DEV_UART1_IO = data;
 }
 
 void wd_dev_uart1_write_data(uint8_t * data, size_t length) {
@@ -78,16 +78,16 @@ void wd_dev_uart1_write_data(uint8_t * data, size_t length) {
 }
 
 void wd_dev_uart1_set_reciever(bool recieve) {
-    uint32_t savebits = WD_DEV_UART1_AUX_MU_CNTL_REG & 0xFE;
-    WD_DEV_UART1_AUX_MU_CNTL_REG = savebits | recieve;
+    uint32_t savebits = WD_DEV_UART1_CNTL & (WD_DEV_UART1_CNTL_MSK ^ WD_DEV_UART1_CNTL_RCVE);
+    WD_DEV_UART1_CNTL = savebits | recieve;
 }
 
 void wd_dev_uart1_set_transmitter(bool transmit) {
-    uint32_t savebits = WD_DEV_UART1_AUX_MU_CNTL_REG & 0xFD;
-    WD_DEV_UART1_AUX_MU_CNTL_REG = savebits | (transmit << 1);
+    uint32_t savebits = WD_DEV_UART1_CNTL & (WD_DEV_UART1_CNTL_MSK & WD_DEV_UART1_CNTL_TRANSE);
+    WD_DEV_UART1_CNTL = savebits | (transmit << WD_DEV_UART1_CNTL_TRANSE_S);
 }
 
 void wd_dev_uart1_set_bit(bool sevenbit) {
-    uint32_t savebits = WD_DEV_UART1_AUX_MU_LCR_REG & 0xFE;
-    WD_DEV_UART1_AUX_MU_LCR_REG = savebits | sevenbit;
+    uint32_t savebits = WD_DEV_UART1_LCR & (WD_DEV_UART1_LCR_MSK ^ WD_DEV_UART1_LCR_DATSZ);
+    WD_DEV_UART1_LCR = savebits | sevenbit;
 }
